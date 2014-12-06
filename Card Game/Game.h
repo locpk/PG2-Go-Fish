@@ -43,5 +43,5 @@ public:
 	// Get the score for the game
 	//	For Go Fish, this will take care of pairing
 	//  For UNO, this will be used for end of round scoring.
-	// int Score(Player* _player);
+	 int Score(Player* _player);
 };

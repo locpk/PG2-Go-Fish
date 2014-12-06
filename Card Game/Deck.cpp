@@ -23,26 +23,16 @@ void Deck::Initialize()
 	*/
 	
 	int index = 0;
-	for (size_t i = 2; i <= 14; i++)
+	for (size_t i = 3; i <= 6; i++)
 	{
-		m_cards[index] = Card(i, 3);
-		index++;
+		for (size_t j = 2; j <= 14; j++)
+		{
+			m_cards[index].SetSuit(i);
+			m_cards[index].SetFace(j);
+			index++;
+		}
 	}
-	for (size_t i = 2; i <= 14; i++)
-	{
-		m_cards[index] = Card(i, 4);
-		index++;
-	}
-	for (size_t i = 2; i <= 14; i++)
-	{
-		m_cards[index] = Card(i, 5);
-		index++;
-	}
-	for (size_t i = 2; i <= 14; i++)
-	{
-		m_cards[index] = Card(i, 6);
-		index++;
-	}
+	
 }
 
 
@@ -64,9 +54,7 @@ void Deck::Shuffle()
 			index = rand() % 52 + i;
 		} while (index >= 52);
 		//swap 
-		temp = m_cards[i];
-		m_cards[i] = m_cards[index];
-		m_cards[index] = temp;
+		swap(m_cards[i], m_cards[index]);
 	}
 	for (size_t i = 0; i < 52; i++)
 	{
