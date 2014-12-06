@@ -70,6 +70,7 @@ public:
 		CARD_REL_OP(>=)
 		CARD_REL_OP(<=)
 	
+
 	// Insertion operator to display Cards with cout (or any other ostream object)
 
 	/* TODO Lab1:

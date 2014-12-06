@@ -166,6 +166,8 @@ bool Player::Discard(int _index, Card& _discard)
 // Clear the player's hand so that they are holding 0 cards
 void Player::Clear()
 {
+	SortCards();
+	Show();
 	/* TODO Lab2:
 			Implement this method.
 	*/
@@ -175,5 +177,15 @@ void Player::Clear()
 // Display method (empty for this class)
 void Player::Show() const
 {
+	for (int i = 0; i < 6; i++)
+	{
+		cout << m_hand[i];
+	}
+}
 
+bool Player::SortCards()
+{
+	std::sort(m_hand, m_hand+6);
+	Show();
+	return true;
 }

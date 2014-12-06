@@ -1,5 +1,6 @@
-#include "Game.h"
+﻿#include "Game.h"
 
+std::string getFileContents(std::ifstream&);
 // Default ctor
 Game::Game()
 {
@@ -20,6 +21,9 @@ void Game::Run()
 	// Loop while our bool remains true.
 	while(bRun)
 	{
+		//test different state 
+		SetState(GAME_MENU);
+		ifstream Reader("asc.txt");
 		switch(m_state)
 		{
 		case GAME_INIT:
@@ -27,6 +31,21 @@ void Game::Run()
 			break;
 		case GAME_MENU:
 			// Insert menu code here.
+			Console::Clear();
+			
+			cout << getFileContents(Reader);
+			/*_¦¦¦¦¦¦_   _¦¦¦¦¦¦_          _¦¦¦¦¦¦¦¦  _¦     _¦¦¦¦¦¦¦¦    _¦    ¦_
+				¦¦¦    ¦¦¦ ¦¦¦    ¦¦¦        ¦¦¦    ¦¦¦ ¦¦¦    ¦¦¦    ¦¦¦   ¦¦¦    ¦¦¦
+				¦¦¦    ¦¯  ¦¦¦    ¦¦¦        ¦¦¦    ¦¯  ¦¦¦¦   ¦¦¦    ¦¯    ¦¦¦    ¦¦¦
+				_¦¦¦        ¦¦¦    ¦¦¦       _¦¦¦___     ¦¦¦¦   ¦¦¦         _¦¦¦____¦¦¦__
+				¯¯¦¦¦ ¦¦¦¦_  ¦¦¦    ¦¦¦      ¯¯¦¦¦¯¯¯     ¦¦¦¦ ¯¦¦¦¦¦¦¦¦¦¦¦ ¯¯¦¦¦¯¯¯¯¦¦¦¯
+				¦¦¦    ¦¦¦ ¦¦¦    ¦¦¦        ¦¦¦        ¦¦¦           ¦¦¦   ¦¦¦    ¦¦¦
+				¦¦¦    ¦¦¦ ¦¦¦    ¦¦¦        ¦¦¦        ¦¦¦     _¦    ¦¦¦   ¦¦¦    ¦¦¦
+				¦¦¦¦¦¦¦¦¯   ¯¦¦¦¦¦¦¯         ¦¦¦        ¦¯    _¦¦¦¦¦¦¦¦¯    ¦¦¦    ¦¯*/
+			Console::SetCursorPosition(Console::WindowWidth() /2 -5,13);
+			cout << ">>  "<< "Start\b\b\b\b\b\b\b\b\b"<<endl;
+
+			                                                   
 			break;
 		case GAME_PLAY:
 			// Insert game play code here.
@@ -36,5 +55,27 @@ void Game::Run()
 			bRun = false;
 			break;
 		}
+	}
+}
+
+std::string getFileContents(std::ifstream& File)
+{
+	std::string Lines = "";        //All lines
+
+	if (File)                      //Check if everything is good
+	{
+		while (File.good())
+		{
+			std::string TempLine;                  //Temp line
+			std::getline(File, TempLine);        //Get temp line
+			TempLine += "\n";                      //Add newline character
+
+			Lines += TempLine;                     //Add newline
+		}
+		return Lines;
+	}
+	else                           //Return error
+	{
+		return "ERROR File does not exist.";
 	}
 }

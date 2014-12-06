@@ -28,6 +28,6 @@ void Computer::Show() const
 	for (int i = 0; i < Player::GetNumCards(); i++)
 	{
 		Player::GetCard(i, tempCard);
-		cout << tempCard.GetFace() << tempCard.GetSuit() << "\t";
+		cout << "XX" << "\t";
 	}
 }

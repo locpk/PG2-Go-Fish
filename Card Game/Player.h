@@ -51,7 +51,7 @@ public:
 		TODO Lab2:
 			Make sure that all destructors are called in the case of upcast objects.
 	*/
-	~Player();
+	virtual ~Player();
 
 	/* TODO Lab4:
 			Prototype the assignment operator
@@ -109,6 +109,8 @@ public:
 
 	// Display method (empty for this class)
 	
+
+	bool SortCards();
 	/* TODO Lab2:
 			Allow this method to be overridden in child classes.
 	*/
