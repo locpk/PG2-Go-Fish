@@ -25,7 +25,7 @@
 	In order to run gameplay, set the "GAME" #define to TRUE/1.
 */
 
-#define LAB1 TRUE
+#define LAB1 FALSE
 
 #if !LAB1
 #define LAB1_CARD_CTOR			FALSE
@@ -48,7 +48,7 @@
 #endif
 
 
-#define LAB2 TRUE
+#define LAB2 FALSE
 
 #if !LAB2
 #define LAB2_PLAYER_CTOR		FALSE
@@ -80,7 +80,7 @@
 #define LAB2_CPU_SHOW			TRUE
 #endif
 
-#define LAB3 FALSE
+#define LAB3 TRUE
 
 #if !LAB3
 #define LAB3_DECK_INIT			FALSE

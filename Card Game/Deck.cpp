@@ -70,7 +70,7 @@ void Deck::Shuffle()
 	}
 	for (size_t i = 0; i < 52; i++)
 	{
-		m_Stack.Push( m_cards[i]);
+		m_Stack.Push(m_cards[i]);
 	}
 
 }
@@ -85,9 +85,15 @@ bool Deck::Draw(Card& _card)
 	/* TODO Lab3:
 			Implement this method.
 	*/
-
+	
+	if (FALSE == m_Stack.Pop(_card))
+		return false;
+	else
+	{
+		return true;
+	}
 	// Just here for compilation
-	return true;
+	
 }
 
 // Clear the stack for re-use
@@ -96,6 +102,8 @@ void Deck::Clear()
 	/* TODO Lab3:
 			Implement this method.
 	*/
+		m_Stack.Clear();
+
 }
 
 // Check to see if there are any cards left in the stack
@@ -107,7 +115,9 @@ bool Deck::IsEmpty() const
 	/* TODO Lab3:
 			Implement this method.
 	*/
-
+	if (NULL == m_Stack.Peek())
+		return true;
 	// Just here for compilation
-	return true;
+	else
+		return false;
 }
