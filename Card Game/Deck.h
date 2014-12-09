@@ -28,7 +28,7 @@ public:
 
 	// Default ctor
 	Deck();
-
+	~Deck();
 	// Sets up the array of cards to be a unique deck
 	void Initialize();
 	void Display();

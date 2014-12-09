@@ -1,9 +1,5 @@
 #include "Deck.h"
-struct SortByX
-{
-	bool operator () (Card const & L, Card const & R) { return L.GetSuit() < R.GetSuit(); }
-};
-// Default ctor
+
 Deck::Deck()
 {
 	/* TODO Lab3:
@@ -12,6 +8,12 @@ Deck::Deck()
 			Get everything set up by calling Initialize.
 	*/
 	Initialize();
+	Shuffle();
+}
+
+Deck::~Deck()
+{
+
 }
 
 // Sets up the array of cards to be a unique deck
@@ -64,33 +66,7 @@ void Deck::Shuffle()
 		m_Stack.Push(m_cards[i]);
 	}
 
-	cout << "Shuffling\n";
-	for (int i = 0; i < 52; i++)
-	{
-		cout << m_cards[i] << "  ";
-
-	}
-	cout << "\n";
-	//first sort by suit
-	sort(m_cards, m_cards + 51, SortByX());
-	int begin = 0;
-	//loop to group different suits, set flags to the start index of different suit.
-	for (size_t i = 0; i < 52; i++)
-	{
-		if (m_cards[begin].GetSuit() != m_cards[i].GetSuit())
-		{
-			sort(m_cards + begin, m_cards + (i - 1));
-
-			begin = i;
-		}
-	}
-	//sort the groups, within sorting by face.
-	cout << "Sorting \n";
-	for (int i = 0; i < 52; i++)
-	{
-		cout << m_cards[i] << "  ";
-
-	}
+			
 }
 
 // Draw the top-most card off of the stack
@@ -104,7 +80,7 @@ bool Deck::Draw(Card& _card)
 			Implement this method.
 	*/
 	
-	if (FALSE == m_Stack.Pop(_card))
+	if (FALSE == m_Stack.Pop(_card)) 
 		return false;
 	else
 	{

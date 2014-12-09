@@ -4,7 +4,8 @@ using namespace std;
 
 #include "Player.h"
 #include "Deck.h"
-
+#include "Human.h"
+#include "Computer.h"
 // Enum of gamestates, you can add and remove from this if you need additional ones (examples include: GAME_TITLE, GAME_MENU, GAME_OPTIONS, etc).
 enum GAMESTATE { GAME_INIT, GAME_TITLE, GAME_MENU, GAME_PLAY, GAME_END, ROUND_INIT, ROUND_END};
 
@@ -26,7 +27,12 @@ class Game
 	GAMESTATE m_state;
 
 	// Add game data members as necessary
-
+	Card* m_deck_temp;
+	Card* m_player_temp;
+	Card* m_pair_check1;
+	Card* m_pair_check2;
+	Card* m_pair_discard1;
+	Card* m_pair_discard2;
 public:
 	// Default ctor
 	Game();
@@ -44,4 +50,5 @@ public:
 	//	For Go Fish, this will take care of pairing
 	//  For UNO, this will be used for end of round scoring.
 	 int Score(Player* _player);
+	 bool AskCard(Player* _current_player, Player* _next_player);
 };

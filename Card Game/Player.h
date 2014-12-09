@@ -20,7 +20,7 @@ private:
 			Turn the name and hand data members into dynamic arrays.
 	*/
 	char m_name[32];			// Can change size of array if needed
-	Card m_hand[7];				// Can change size of array if needed
+	Card m_hand[52];				// Can change size of array if needed
 
 	int m_numCards;				// The number of cards the player is currently holding
 	
@@ -110,15 +110,17 @@ public:
 	// Display method (empty for this class)
 	
 
-	bool SortCards();
+	bool SortCardsbySuit();
+	bool SortCardsbyNum();
+
 	/* TODO Lab2:
 			Allow this method to be overridden in child classes.
 	*/
 	virtual	void Show() const;
-
+	
 	// Needed for unit tests
 	// DO NOT REMOVE
 	friend class CTestManager;
-
+	
 };
 

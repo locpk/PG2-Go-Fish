@@ -6,13 +6,13 @@
 
 Card::Card(int _face, char _suit)
 {
-	/* TODO Lab1:
+	/* TODO Lab1: 
 			Fill out the constructor body
 	*/
 	m_face = _face;
 	m_suit = _suit;
 }
-
+ 
 Card::~Card()
 {
 

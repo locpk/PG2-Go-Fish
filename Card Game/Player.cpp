@@ -1,5 +1,14 @@
 ﻿#include "Player.h"
 
+struct SortBySuit
+{
+	bool operator () (Card const & L, Card const & R) { return L.GetSuit() < R.GetSuit(); }
+};
+bool SortByFace(Card const & L, Card const & R)
+{
+	return L < R;
+}
+
 /* TODO Lab5:
 		Initialize m_maxCards in all constructors
 */
@@ -166,8 +175,6 @@ bool Player::Discard(int _index, Card& _discard)
 // Clear the player's hand so that they are holding 0 cards
 void Player::Clear()
 {
-	SortCards();
-	Show();
 	/* TODO Lab2:
 			Implement this method.
 	*/
@@ -177,15 +184,31 @@ void Player::Clear()
 // Display method (empty for this class)
 void Player::Show() const
 {
-	for (int i = 0; i < 6; i++)
-	{
-		cout << m_hand[i];
-	}
+
 }
 
-bool Player::SortCards()
+bool Player::SortCardsbySuit()
 {
-	std::sort(m_hand, m_hand+6);
-	Show();
+	//first sort by suit
+	sort(m_hand, m_hand + m_numCards, SortBySuit());
+	int begin = 0;
+	//loop to group different suits, set flags to the start index of different suit.
+	for (size_t i = 0; i < m_numCards; i++)
+	{
+		if (m_hand[begin].GetSuit() != m_hand[i].GetSuit())
+		{
+			sort(m_hand + begin, m_hand + (i - 1));
+
+			begin = i;
+		}
+	}
+	//sort the groups, within sorting by face.
+	return true;
+}
+
+bool Player::SortCardsbyNum()
+{
+
+	sort(m_hand, m_hand + m_numCards, SortByFace);
 	return true;
 }

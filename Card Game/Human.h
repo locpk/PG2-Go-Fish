@@ -5,7 +5,7 @@
 		Make Human a child of Player
 */
 
-class Human : private Player
+class Human : public Player
 {
 
 public:
