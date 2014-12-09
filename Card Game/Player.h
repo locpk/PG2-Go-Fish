@@ -19,8 +19,8 @@ private:
 	/* TODO Lab4:
 			Turn the name and hand data members into dynamic arrays.
 	*/
-	char m_name[32];			// Can change size of array if needed
-	Card m_hand[52];				// Can change size of array if needed
+	char* m_name;			// Can change size of array if needed
+	Card* m_hand;				// Can change size of array if needed
 
 	int m_numCards;				// The number of cards the player is currently holding
 	
@@ -44,6 +44,8 @@ public:
 	/* TODO Lab4:
 			Prototype the copy constructor
 	*/
+	Player(const Player& _obj);
+
 
 
 	// Dtor
@@ -56,7 +58,7 @@ public:
 	/* TODO Lab4:
 			Prototype the assignment operator
 	*/
-
+	Player& operator =(const Player& _obj);
 	/* Accessors */
 
 	/* TODO Lab2:

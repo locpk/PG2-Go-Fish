@@ -27,6 +27,8 @@ class Game
 	GAMESTATE m_state;
 
 	// Add game data members as necessary
+	ifstream m_title_art;
+	const char* m_filename = "asc.txt";
 	Card* m_deck_temp;
 	Card* m_player_temp;
 	Card* m_pair_check1;
@@ -51,4 +53,6 @@ public:
 	//  For UNO, this will be used for end of round scoring.
 	 int Score(Player* _player);
 	 bool AskCard(Player* _current_player, Player* _next_player);
+	 void MenuCursor();
+	 void ShowHands(Player* _player);
 };

@@ -1,13 +1,8 @@
 ﻿#include "Player.h"
 
-struct SortBySuit
-{
-	bool operator () (Card const & L, Card const & R) { return L.GetSuit() < R.GetSuit(); }
-};
-bool SortByFace(Card const & L, Card const & R)
-{
-	return L < R;
-}
+
+bool SortBySuit(Card const & L, Card const &  R) { return L.GetSuit() < R.GetSuit(); }
+bool SortByFace(Card const & L, Card const &  R) { return L < R; }
 
 /* TODO Lab5:
 		Initialize m_maxCards in all constructors
@@ -24,7 +19,10 @@ Player::Player(const char* _name, int _maxCards)
 
 			Keep in mind that there are more than two data members.
 			*/
-	SetName(_name);
+	int len = strlen(_name) + 1;
+	m_name = new char[len];
+	strcpy_s(m_name, len, _name);
+	m_hand = new Card[_maxCards];
 	m_maxCards = _maxCards;
 	m_numCards = 0;
 	m_score = 0;
@@ -35,6 +33,27 @@ Player::Player(const char* _name, int _maxCards)
 
 		Make sure to copy all data members (using deep copies when necessary).
 */
+Player::Player(const Player& _obj)
+{
+	//deep copy m_name and m_hand
+	int len = strlen(_obj.m_name) + 1;
+	m_name = new char[len];
+	strcpy_s(m_name, len, _obj.m_name);
+
+	m_hand = new Card[_obj.m_maxCards];
+	//memcpy(m_hand, _obj.m_hand, sizeof(Card)*_obj.m_numCards);
+	for (int i = 0; i < _obj.GetNumCards(); i++)
+	{
+		m_hand[i] = _obj.m_hand[i];
+	}
+	
+	//shallow copy the rest members
+	m_maxCards = _obj.m_maxCards;
+	m_numCards = _obj.m_numCards;
+	m_score = _obj.m_score;
+	
+}
+
 
 // Dtor
 Player::~Player()
@@ -42,6 +61,8 @@ Player::~Player()
 	/* TODO Lab4:
 			Clean up any dynamic memory
 	*/
+	delete[] m_name;
+	delete[] m_hand;
 }
 
 /* TODO Lab4:
@@ -52,6 +73,33 @@ Player::~Player()
 		* There will be a small change to this in Lab5 where you will have to comment out
 		  the m_maxCards assignment, but go ahead and make the copy for now.
 */
+Player& Player::operator =(const Player& _obj)
+{
+	if (this != &_obj)
+	{
+		//delete old memory;
+		delete[] m_name;
+		delete[] m_hand;
+
+		//deep copy m_name and m_hand
+		int len = strlen(_obj.m_name) + 1;
+		m_name = new char[len];
+		strcpy_s(m_name, len, _obj.m_name);
+
+		m_hand = new Card[_obj.m_maxCards];
+		//memcpy(m_hand, _obj.m_hand, sizeof(Card)*_obj.m_numCards);
+		for (int i = 0; i < _obj.GetNumCards(); i++)
+		{
+			m_hand[i] = _obj.m_hand[i];
+		}
+
+		//shallow copy the rest members
+		m_maxCards = _obj.m_maxCards;
+		m_numCards = _obj.m_numCards;
+		m_score = _obj.m_score;
+	}
+	return *this;
+}
 
 /* Accessors */
 
@@ -91,7 +139,8 @@ void Player::SetName(const char* _name)
 	/* TODO Lab2/4:
 			Implement this method.
 	*/
-	strcpy_s(m_name, sizeof m_name / sizeof m_name[0], _name); 
+	int len = strlen(_name) + 1;
+	strcpy_s(m_name, len, _name);
 }
 
 // Update the player's score by some amount
@@ -122,6 +171,7 @@ bool Player::AddCard(const Card& _card)
 	if (m_numCards < m_maxCards)
 	{
 		m_hand[m_numCards] = _card;
+		
 		m_numCards++;
 		return true;
 	}
@@ -189,11 +239,13 @@ void Player::Show() const
 
 bool Player::SortCardsbySuit()
 {
+	if (0 == m_numCards)
+		return false;
 	//first sort by suit
-	sort(m_hand, m_hand + m_numCards, SortBySuit());
+	sort(m_hand, m_hand + m_numCards, SortBySuit);
 	int begin = 0;
 	//loop to group different suits, set flags to the start index of different suit.
-	for (size_t i = 0; i < m_numCards; i++)
+	for (int i = 0; i < m_numCards; i++)
 	{
 		if (m_hand[begin].GetSuit() != m_hand[i].GetSuit())
 		{
@@ -208,7 +260,8 @@ bool Player::SortCardsbySuit()
 
 bool Player::SortCardsbyNum()
 {
-
+	if (0 == m_numCards)
+		return false;
 	sort(m_hand, m_hand + m_numCards, SortByFace);
 	return true;
 }

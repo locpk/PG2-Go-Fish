@@ -1,10 +1,11 @@
 #pragma once
 
+#include <windows.h>
+
 namespace System
 {
 
-// Colors
-// Can be used as Foreground or Background
+// Colors - can be used as Foreground or Background
 enum ConsoleColor
 {
 	Black		= 0,
@@ -27,19 +28,20 @@ enum ConsoleColor
 
 class Console
 {
-private:
 	// Data members
 	static HANDLE out;
 	static WORD defColors;
 	static HWND hwnd;
 
+	// Display a Unicode symbol.
+	static void Show(wchar_t symbol);
+
 public:
-	
 	// Get the current foreground color
 	static WORD ForegroundColor();
 
 	// Change the foreground color
-	static void ForegroundColor(WORD color);
+	static void ForegroundColor(WORD attr);
 
 	// Get the current background color
 	static WORD BackgroundColor();
@@ -47,9 +49,8 @@ public:
 	// Change the background color
 	static void BackgroundColor(WORD attr);
 
-	// Set the colors back to the defaults (gray on black)
+	// Set the colors back to the defaults (usually gray on black)
 	static void ResetColor();
-
 	
 	// Get the width of the window in cells (characters)
 	static int WindowWidth();
@@ -79,9 +80,36 @@ public:
 	// Set the visibility of the cursor
 	static void CursorVisible(bool visible);
 
-	// For animation and/or to stop flickering
+	// For animation and/or to reduce flickering
 	static void Lock(bool lock);
 
+	// Do or don't scroll when printing to the lower-right cell.
+	static void EOLWrap(bool on);
+
+	// Prevent cin and GetAsyncKeyState() from seeing each other's input.
+	static void FlushKeys();
+
+	// Display a Unicode symbol.
+	static void Show(int x, int y, wchar_t symbol);
+
+	// Display a rectangle in the window.
+	static void DrawBox(int left, int top, int width, int height, bool dbl);
+
+	// Return a randomly-generated name.
+	static char const * RandomName();
+
+	// Show a message inside a rectangular area with word wrap.
+	static void WordWrap(int x, int y, int w, char const * const t);
+};
+
+class PC
+{
+	long long freq, start;
+
+public:
+	PC(bool go);
+	void Start();
+	double Finish() const;
 };
 
 }

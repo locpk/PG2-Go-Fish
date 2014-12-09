@@ -1,5 +1,7 @@
 ﻿#include "Game.h"
-
+#define CURSORLEFT Console::WindowWidth() /2 -5
+#define STARTBUTTON 13
+#define QUITBUTTON 14
 std::string getFileContents(std::ifstream&);
 // Default ctor
 Game::Game()
@@ -11,12 +13,13 @@ Game::Game()
 	}
 	m_currPlayer = 0;
 	m_numPlayers = 0;
-	m_deck_temp = new Card();
-	m_player_temp = new Card();
-	m_pair_check1 = new Card();
-	m_pair_check2 = new Card();
-	m_pair_discard1 = new Card();
-	m_pair_discard2 = new Card();
+	m_deck_temp = new Card;
+	m_player_temp = new Card;
+	m_pair_check1 = new Card;
+	m_pair_check2 = new Card;
+	m_pair_discard1 = new Card;
+	m_pair_discard2 = new Card;
+	m_title_art = ifstream(m_filename);
 }
 
 // Dtor
@@ -45,14 +48,16 @@ void Game::Run()
 	while(bRun)
 	{
 		//test different state 
-		ifstream Reader("asc.txt");
+		
+		
 		switch(m_state)
 		{
 		case GAME_INIT:
+			
 			// Insert initialization code here.
-			m_players[0] = new Human();
+			m_players[0] = new Human;
 			m_numPlayers++;
-			m_players[1] = new Computer();
+			m_players[1] = new Computer;
 			m_numPlayers++;
 			
 			//draw 7 card for player 0
@@ -77,8 +82,7 @@ void Game::Run()
 		case GAME_MENU:
 			// Insert menu code here.
 			Console::Clear();
-			
-			cout << getFileContents(Reader);
+			cout << getFileContents(m_title_art);
 			/*_¦¦¦¦¦¦_   _¦¦¦¦¦¦_          _¦¦¦¦¦¦¦¦  _¦     _¦¦¦¦¦¦¦¦    _¦    ¦_
 				¦¦¦    ¦¦¦ ¦¦¦    ¦¦¦        ¦¦¦    ¦¦¦ ¦¦¦    ¦¦¦    ¦¦¦   ¦¦¦    ¦¦¦
 				¦¦¦    ¦¯  ¦¦¦    ¦¦¦        ¦¦¦    ¦¯  ¦¦¦¦   ¦¦¦    ¦¯    ¦¦¦    ¦¦¦
@@ -87,10 +91,13 @@ void Game::Run()
 				¦¦¦    ¦¦¦ ¦¦¦    ¦¦¦        ¦¦¦        ¦¦¦           ¦¦¦   ¦¦¦    ¦¦¦
 				¦¦¦    ¦¦¦ ¦¦¦    ¦¦¦        ¦¦¦        ¦¦¦     _¦    ¦¦¦   ¦¦¦    ¦¦¦
 				¦¦¦¦¦¦¦¦¯   ¯¦¦¦¦¦¦¯         ¦¦¦        ¦¯    _¦¦¦¦¦¦¦¦¯    ¦¦¦    ¦¯*/
-			Console::SetCursorPosition(Console::WindowWidth() /2 -5,13);
-			cout << ">>  "<< "Start\b\b\b\b\b\b\b\b\b"<<endl;
-			system("pause");
-			SetState(GAME_PLAY);
+
+			Console::SetCursorPosition(CURSORLEFT, STARTBUTTON);
+			cout << ">>      " << "Start\n";
+			Console::SetCursorPosition(CURSORLEFT, QUITBUTTON);
+			cout << ">>      " << "Quit\n";
+			Console::SetCursorPosition(CURSORLEFT, STARTBUTTON);
+			MenuCursor();
 			break;
 		case GAME_PLAY:
 			// Insert game play code here.
@@ -99,7 +106,8 @@ void Game::Run()
 				if (m_currPlayer == m_numPlayers || NULL == m_players[m_currPlayer] ) //reset players let them take turns
 					m_currPlayer = 0;
 				Score(m_players[m_currPlayer]); // check pairs
-				if (m_Deck.IsEmpty()) // game over condition without allowing quiting game
+				ShowHands(m_players[m_currPlayer]);
+				if (m_Deck.IsEmpty() && m_players[m_currPlayer]->GetNumCards() == 0) // game over condition without allowing quiting game
 				{
 					SetState(GAME_END);
 					break;
@@ -114,26 +122,38 @@ void Game::Run()
 				}
 				if (1 == m_currPlayer) // for two players
 				{
-					if (!AskCard(m_players[m_currPlayer], m_players[m_currPlayer - 1])) // if askcard fails draw from deck
+					if (!AskCard(m_players[m_currPlayer], m_players[m_currPlayer - 1])) // if ask card fails draw from deck
 					{
 						if (m_Deck.Draw(*m_deck_temp))
 							m_players[m_currPlayer]->AddCard(*m_deck_temp);
-						cout << endl << "Ask fails, Draw from deck" << endl;
+						//cout << endl << "Ask fails, Draw from deck" << endl;
 					}
 				}
-				if (!AskCard(m_players[m_currPlayer], m_players[m_currPlayer + 1])) // if askcard fails draw from deck
+				if (!AskCard(m_players[m_currPlayer], m_players[m_currPlayer + 1])) // if ask card fails draw from deck
 				{
 					if (m_Deck.Draw(*m_deck_temp))
 						m_players[m_currPlayer]->AddCard(*m_deck_temp);
-					cout << endl << "Ask fails, Draw from deck" << endl;
+					//cout << endl << "Ask fails, Draw from deck" << endl;
 				}
 				
 			}
+			Console::BackgroundColor(Blue);
+			cout << "Game ENDs!" << endl;
+			for (int i = 0; i < m_numPlayers; i++)
+			{
+				cout << m_players[i]->GetName() << "'s FINAL SCORE is: ";
+				cout << m_players[i]->GetScore() << endl;
+			}
+			Console::ResetColor();
+			Sleep(6000);
 			SetState(GAME_END);
 			break;
 		case GAME_END:
 			// The game is over, change the bool to stop the loop.
 			bRun = false;
+			Console::Clear();
+			cout << "Bye Bye!" << endl;
+			Console::Lock(false);
 			break;
 		}
 	}
@@ -181,9 +201,7 @@ int Game::Score(Player* _player)
 			}
 		}
 	}
-	cout << "Pair Checked for:" << _player->GetName() << endl;
 	_player->SortCardsbySuit();
-	_player->Show();
 	return iPairs;
 }
 
@@ -251,5 +269,61 @@ bool Game::AskCard(Player* _current_player, Player* _next_player)
 			}
 		}
 		return false;
+	}
+}
+
+void Game::MenuCursor()
+{
+	//get keyboard input 
+	while (true)
+	{
+		//a pause in case loops too quick before user release the key
+		Sleep(500);
+		if (GetAsyncKeyState(VK_UP))
+		{
+			if (Console::CursorTop() == QUITBUTTON)
+			{
+				Console::SetCursorPosition(CURSORLEFT, STARTBUTTON);
+			}
+			else
+			{
+				Console::SetCursorPosition(CURSORLEFT, QUITBUTTON);
+			}
+		}
+		else if (GetAsyncKeyState(VK_DOWN))
+		{
+			if (Console::CursorTop() == STARTBUTTON)
+			{
+				Console::SetCursorPosition(CURSORLEFT, QUITBUTTON);
+			}
+			else
+			{
+				Console::SetCursorPosition(CURSORLEFT, STARTBUTTON);
+			}
+		}
+		else if (GetAsyncKeyState(VK_RETURN))
+		{
+			if (QUITBUTTON == Console::CursorTop())
+			{
+				SetState(GAME_END);
+				break;
+			}
+			else
+			{
+				Console::Clear();
+				SetState(GAME_PLAY);
+				break;
+			}
+		}
+		Console::Lock(false);
+	}
+}
+
+void Game::ShowHands(Player* _player)
+{
+	if (0 != _player->GetNumCards())
+	{
+		cout << endl << _player->GetName() << " currently has:" << endl;
+		_player->Show();
 	}
 }

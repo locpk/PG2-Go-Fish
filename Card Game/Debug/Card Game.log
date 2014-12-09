@@ -1,9 +1,45 @@
-﻿Build started 12/9/2014 00:56:05.
+﻿Build started 12/9/2014 16:37:37.
      1>Project "C:\Users\Tom\OneDrive\Full Sail\Lectures\Programming II\PG2 Project\Card Game\Card Game.vcxproj" on node 2 (Build target(s)).
-     1>Link:
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Game.cpp
+         Game.cpp
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Tom\OneDrive\Full Sail\Lectures\Programming II\PG2 Project\Debug\Card Game.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Tom\OneDrive\Full Sail\Lectures\Programming II\PG2 Project\Debug\Card Game.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Tom\OneDrive\Full Sail\Lectures\Programming II\PG2 Project\Debug\Card Game.lib" /MACHINE:X86 Debug\Card.obj
+         Debug\Computer.obj
+         Debug\Console.obj
+         Debug\Deck.obj
+         Debug\Game.obj
+         Debug\Human.obj
+         Debug\Lab1_Test.obj
+         Debug\Lab2_Test.obj
+         Debug\Lab3_Test.obj
+         Debug\Lab4_Test.obj
+         Debug\Lab5_Test.obj
+         Debug\Lab7_Test.obj
+         Debug\main.obj
+         Debug\Player.obj
+         Debug\AssertException.obj
+         Debug\Checks.obj
+         Debug\CurrentTest.obj
+         Debug\DeferredTestReporter.obj
+         Debug\DeferredTestResult.obj
+         Debug\MemoryOutStream.obj
+         Debug\ReportAssert.obj
+         Debug\Test.obj
+         Debug\TestDetails.obj
+         Debug\TestList.obj
+         Debug\TestReporter.obj
+         Debug\TestReporterStdout.obj
+         Debug\TestResults.obj
+         Debug\TestRunner.obj
+         Debug\TimeConstraint.obj
+         Debug\TimeHelpers.obj
+         Debug\XmlTestReporter.obj
+         Debug\Stack.obj
+         Debug\TestManager.obj
          Card Game.vcxproj -> C:\Users\Tom\OneDrive\Full Sail\Lectures\Programming II\PG2 Project\Debug\Card Game.exe
      1>Done Building Project "C:\Users\Tom\OneDrive\Full Sail\Lectures\Programming II\PG2 Project\Card Game\Card Game.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.06
+Time Elapsed 00:00:01.01

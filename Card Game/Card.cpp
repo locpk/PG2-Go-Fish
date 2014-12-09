@@ -12,7 +12,12 @@ Card::Card(int _face, char _suit)
 	m_face = _face;
 	m_suit = _suit;
 }
- 
+Card& Card::operator =(const Card& _obj)
+{
+	m_face = _obj.m_face;
+	m_suit = _obj.m_suit;
+	return *this;
+}
 Card::~Card()
 {
 

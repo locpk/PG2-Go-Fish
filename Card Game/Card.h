@@ -18,6 +18,8 @@ public:
 			Make the default values for a card the 2 of hearts
 	*/
 	Card(int _face = 2, char _suit = 3);
+
+	Card& operator =(const Card& _obj);
 	
 	// Destructor
 	~Card();
