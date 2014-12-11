@@ -9,6 +9,7 @@ using namespace std;
 // Enum of gamestates, you can add and remove from this if you need additional ones (examples include: GAME_TITLE, GAME_MENU, GAME_OPTIONS, etc).
 enum GAMESTATE { GAME_INIT, GAME_TITLE, GAME_MENU, GAME_PLAY, GAME_END, ROUND_INIT, ROUND_END};
 
+
 class Game
 {
 	// Necessary data members
@@ -27,6 +28,7 @@ class Game
 	GAMESTATE m_state;
 
 	// Add game data members as necessary
+	int isComputer;
 	ifstream m_title_art;
 	const char* m_filename = "asc.txt";
 	Card* m_deck_temp;

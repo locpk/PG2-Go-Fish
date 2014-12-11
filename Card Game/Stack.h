@@ -1,5 +1,6 @@
 #pragma once
 #include"Card.h"
+#include"Player.h"
 /*
 	Stacks use FILO (First In, Last Out) ordering
 			   LIFO (Last In, First Out)
@@ -8,7 +9,7 @@
 
 */
 
-typedef Card Item;	// A way to provide an alias for a datatype
+typedef Card Item;// A way to provide an alias for a datatype
 
 // A FILO sequence implemented using a singly-linked list
 class Stack

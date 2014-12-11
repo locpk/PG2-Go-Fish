@@ -80,7 +80,7 @@
 #define LAB2_CPU_SHOW			TRUE
 #endif
 
-#define LAB3 TRUE
+#define LAB3 FALSE
 
 #if !LAB3
 #define LAB3_DECK_INIT			FALSE
@@ -96,7 +96,7 @@
 #define LAB3_DECK_ISEMPTY		TRUE
 #endif
 
-#define LAB4 TRUE
+#define LAB4 FALSE
 
 #if !LAB4
 #define LAB4_PLAYER_CTOR		FALSE
@@ -126,4 +126,4 @@
 #define LAB7_PLAYER_ABC			TRUE
 #endif
 
-#define GAME FALSE
+#define GAME TRUE

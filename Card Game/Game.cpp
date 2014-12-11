@@ -14,6 +14,7 @@ Game::Game()
 	}
 	m_currPlayer = 0;
 	m_numPlayers = 0;
+	isComputer = 0;
 	m_deck_temp = new Card;
 	m_player_temp = new Card;
 	m_pair_check1 = new Card;
@@ -26,6 +27,11 @@ Game::Game()
 // Dtor
 Game::~Game()
 {
+	for (int i = 0; i < m_numPlayers; i++)
+	{
+		delete m_players[i];
+		m_players[i] = nullptr;
+	}
 	delete m_deck_temp;
 	m_deck_temp = nullptr;
 	delete m_player_temp;
@@ -56,28 +62,49 @@ void Game::Run()
 		case GAME_INIT:
 			
 			// Insert initialization code here.
-			m_players[0] = new Human;
-			m_numPlayers++;
-			m_players[1] = new Computer;
-			m_numPlayers++;
+			while (m_numPlayers < 2 || m_numPlayers > 4)
+			{
+				cout << "How many players? (2 - 4)";
+				while (!(cin >> m_numPlayers))
+				{
+					cout << "invalid input";
+					cin.clear();
+					cin.sync();
+				}
+			}
 
+			for (int i = 0; i < m_numPlayers; i++)
+			{
+				cout << "Player " << i + 1 << " is computer? (0 for NO, 1 for YES)";
+				while (!(cin >> isComputer) || (isComputer != 0 && isComputer != 1))
+				{
+					cout << "invalid input";
+					cin.clear();
+					cin.sync();
+				}
+				if (1 == isComputer)
+				{
+					m_players[i] = new Computer(Console::RandomName());
+				}
+				else
+				{
+					m_players[i] = new Human;
+				}
+				
+			}
 			m_Deck.Shuffle();
 			
-			//draw 7 card for player 0
-			for (size_t i = 0; i < 7; i++)
+			for (int i = 0; i < m_numPlayers; i++)
 			{
-				m_Deck.Draw(*m_deck_temp);
-				m_players[0]->AddCard(*m_deck_temp);
-			}
-			
+				//draw 7 card for the player 
+				for (int j = 0; j < 7; j++)
+				{
+					m_Deck.Draw(*m_deck_temp);
+					m_players[i]->AddCard(*m_deck_temp);
+				}
 
-			//draw 7 card for player 1
-			for (size_t i = 0; i < 7 && !m_Deck.IsEmpty(); i++)
-			{
-				m_Deck.Draw(*m_deck_temp);
-				m_players[1]->AddCard(*m_deck_temp);
 			}
-			
+
 			
 			
 			SetState(GAME_MENU);
@@ -106,22 +133,26 @@ void Game::Run()
 			// Insert game play code here.
 			for (int m_currPlayer = 0; m_currPlayer <= m_numPlayers; m_currPlayer++)
 			{
-				if (m_currPlayer == m_numPlayers || NULL == m_players[m_currPlayer] ) //reset players let them take turns
+				if (m_currPlayer == m_numPlayers) //reset players let them take turns
 					m_currPlayer = 0;
 
 				Score(m_players[m_currPlayer]); // check pairs
 				Sleep(1500);
 				Console::Clear();
 				cout << "Pairs Checked!" << endl;
-				if (1 == m_currPlayer)
+				/*if (--m_numPlayers == m_currPlayer)
 				{
 					ShowHands(m_players[m_currPlayer]);
-					ShowHands(m_players[m_currPlayer - 1]);
+					ShowHands(m_players[0]);
 				}
-				else
+				else 
 				{
 					ShowHands(m_players[m_currPlayer]);
 					ShowHands(m_players[m_currPlayer + 1]);
+				}*/
+				for (int i = 0; i < m_numPlayers; i++)
+				{
+					ShowHands(m_players[i]);
 				}
 
 				if (0 == m_players[m_currPlayer]->GetNumCards())
@@ -132,15 +163,15 @@ void Game::Run()
 							m_players[m_currPlayer]->AddCard(*m_deck_temp);
 					}
 				}
-				if (m_Deck.IsEmpty() && 0 == m_players[0]->GetNumCards() || 0 == m_players[1]->GetNumCards()) // game over condition without allowing quiting game
+				if (m_Deck.IsEmpty()) // game over condition without allowing quiting game
 				{
 					SetState(GAME_END);
 					break;
 				}
 
-				if (1 == m_currPlayer) // if current player is the second player
+				if (m_numPlayers-1 == m_currPlayer) // if current player is the last player
 				{
-					if (!AskCard(m_players[m_currPlayer], m_players[m_currPlayer - 1])) // if ask card fails draw from deck
+					if (!AskCard(m_players[m_currPlayer], m_players[0])) // if ask card fails draw from deck
 					{
 						if (m_Deck.Draw(*m_deck_temp))
 							m_players[m_currPlayer]->AddCard(*m_deck_temp);
@@ -237,6 +268,14 @@ bool Game::AskCard(Player* _current_player, Player* _next_player)
 		cout << "What do you want? _\b";
 		while (!(cin >> iFace))
 		{
+			bool inHand = false;
+			for (int i = 0; i < _current_player->GetNumCards(); i++)
+			{
+				_current_player->GetCard(i, *m_player_temp);
+				if (iFace == m_player_temp->GetFace())
+					inHand = true;
+			}
+			cout << "invalid input";
 			cin.clear();
 			cin.sync();
 		}
