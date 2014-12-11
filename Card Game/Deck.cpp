@@ -37,7 +37,7 @@ void Deck::Initialize()
 			index++;
 		}
 	}
-	
+	Shuffle();
 }
 
 

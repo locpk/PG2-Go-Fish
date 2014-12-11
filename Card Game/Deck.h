@@ -22,7 +22,7 @@ class Deck
 	*/
 
 	// Uncomment this when you get the Stack class
-	Stack m_Stack;
+	Stack<Card> m_Stack;
 
 public:
 

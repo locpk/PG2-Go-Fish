@@ -54,7 +54,6 @@ public:
 	//	For Go Fish, this will take care of pairing
 	//  For UNO, this will be used for end of round scoring.
 	 int Score(Player* _player);
-	 bool AskCard(Player* _current_player, Player* _next_player);
+	 bool AskCard(Player* _current_player, Player** _next_player);
 	 void MenuCursor();
-	 void ShowHands(Player* _player);
 };

@@ -29,7 +29,7 @@ private:
 	*/
 	const int m_maxCards;				// The number of cards the player can store (the number of elements in Hand)
 	int m_score;				// For "Go Fish," this will represent the number of pairs.  For "UNO," it will be the player's accumulated score
-
+	bool isPlaying;
 public:
 
 	// Default ctor
@@ -67,11 +67,11 @@ public:
 
 			These can be inlined if desired.
 	*/
-
-	const char* GetName() const { return m_name; }
-	int GetNumCards() const { return m_numCards; }
-	int GetMaxCards() const { return m_maxCards; }
-	int GetScore() const { return m_score; }
+	inline bool IsPlaying() const { return isPlaying; }
+	inline const char* GetName() const { return m_name; }
+	inline int GetNumCards() const { return m_numCards; }
+	inline int GetMaxCards() const { return m_maxCards; }
+	inline int GetScore() const { return m_score; }
 
 	// Do not inline this next method
 	
@@ -88,6 +88,7 @@ public:
 	// Change the player's name to the value passed in
 	void SetName(const char* _name); 
 
+	inline bool SetIsPlaying(bool flag) { isPlaying = flag; }
 	// Update the player's score by some amount
 	void AddToScore(int _add);
 

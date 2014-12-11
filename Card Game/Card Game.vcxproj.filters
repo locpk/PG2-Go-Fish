@@ -215,9 +215,6 @@
     <ClCompile Include="Lab7_Test.cpp">
       <Filter>Unit Test Files</Filter>
     </ClCompile>
-    <ClCompile Include="Stack.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="asc.txt">

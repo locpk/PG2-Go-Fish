@@ -92,7 +92,7 @@ void Game::Run()
 				}
 				
 			}
-			m_Deck.Shuffle();
+			
 			
 			for (int i = 0; i < m_numPlayers; i++)
 			{
@@ -112,8 +112,9 @@ void Game::Run()
 			break;
 		case GAME_MENU:
 			// Insert menu code here.
-			cout << "Loading...";
-			Sleep(6000);
+			Console::FlushKeys();
+			cout << "Loading...I wish I am a Quantum computer.";
+			Sleep(1500);
 			Console::Clear();
 			cout << getFileContents(m_title_art);
 			/*_¦¦¦¦¦¦_   _¦¦¦¦¦¦_          _¦¦¦¦¦¦¦¦  _¦     _¦¦¦¦¦¦¦¦    _¦    ¦_
@@ -139,25 +140,16 @@ void Game::Run()
 				if (m_currPlayer == m_numPlayers) //reset players let them take turns
 					m_currPlayer = 0;
 
-				Score(m_players[m_currPlayer]); // check pairs
+				
 				Sleep(1500);
 				Console::Clear();
-				cout << "Pairs Checked!" << endl;
-				/*if (--m_numPlayers == m_currPlayer)
-				{
-					ShowHands(m_players[m_currPlayer]);
-					ShowHands(m_players[0]);
-				}
-				else 
-				{
-					ShowHands(m_players[m_currPlayer]);
-					ShowHands(m_players[m_currPlayer + 1]);
-				}*/
+
+				//show each player's hand
 				for (int i = 0; i < m_numPlayers; i++)
 				{
-					ShowHands(m_players[i]);
+					m_players[i]->Show();
 				}
-
+				// test if a player is run out of cards
 				if (0 == m_players[m_currPlayer]->GetNumCards())
 				{
 					for (size_t i = 0; i < 7; i++)
@@ -166,31 +158,41 @@ void Game::Run()
 							m_players[m_currPlayer]->AddCard(*m_deck_temp);
 					}
 				}
-				if (m_Deck.IsEmpty()) // game over condition without allowing quiting game
+				// dummy game over condition without allowing quiting game
+				if (m_Deck.IsEmpty() && 0 == m_players[0]->GetNumCards() && 0 == m_players[1]->GetNumCards() && 0 == m_players[2]->GetNumCards() && 0 == m_players[3]->GetNumCards()) 
 				{
 					SetState(GAME_END);
 					break;
 				}
 
-				if (m_numPlayers-1 == m_currPlayer) // if current player is the last player
+				if (m_numPlayers - 1 == m_currPlayer) // if current player is the last player
 				{
-					if (!AskCard(m_players[m_currPlayer], m_players[0])) // if ask card fails draw from deck
+					while (AskCard(m_players[m_currPlayer], m_players)) // if ask card fails draw from deck
 					{
-						if (m_Deck.Draw(*m_deck_temp))
-							m_players[m_currPlayer]->AddCard(*m_deck_temp);
+						cout << "Ask successful! Keep asking." << endl;
+					}
+					if (m_Deck.Draw(*m_deck_temp))
+					{
+						m_players[m_currPlayer]->AddCard(*m_deck_temp);
 						cout << endl << m_players[m_currPlayer]->GetName() << " draws from the deck." << endl;
 					}
+					
 				}
 				// if current player is the first player
 				else
 				{
-					if (!AskCard(m_players[m_currPlayer], m_players[m_currPlayer + 1])) // if ask card fails draw from deck
+					while (AskCard(m_players[m_currPlayer], m_players)) // if ask card fails draw from deck
 					{
-						if (m_Deck.Draw(*m_deck_temp))
-							m_players[m_currPlayer]->AddCard(*m_deck_temp);
+						cout << "Ask successful! Keep asking." << endl;
+					}
+					if (m_Deck.Draw(*m_deck_temp))
+					{
+						m_players[m_currPlayer]->AddCard(*m_deck_temp);
 						cout << endl << m_players[m_currPlayer]->GetName() << " draws from the deck." << endl;
 					}
+					
 				}
+				Score(m_players[m_currPlayer]); // check pairs
 				
 			}
 			Console::BackgroundColor(Blue);
@@ -209,7 +211,6 @@ void Game::Run()
 			bRun = false;
 			Console::Clear();
 			cout << "Bye Bye!" << endl;
-			Console::Lock(false);
 			break;
 		}
 	}
@@ -233,9 +234,10 @@ std::string getFileContents(std::ifstream& File)
 	}
 	else                           //Return error
 	{
-		return "ERROR File does not exist.";
+		return "Menu Art File does not exist.";
 	}
 }
+
 int Game::Score(Player* _player)
 {
 	int iPairs{0};
@@ -249,8 +251,8 @@ int Game::Score(Player* _player)
 			_player->GetCard(j, *m_pair_check2);
 			if (m_pair_check1->GetFace() == m_pair_check2->GetFace())
 			{
+				_player->Discard(j, *m_pair_discard2);
 				_player->Discard(i, *m_pair_discard1);
-				_player->Discard(--j, *m_pair_discard2);
 				iPairs++;
 				i = 0;
 				_player->AddToScore(1);
@@ -262,13 +264,19 @@ int Game::Score(Player* _player)
 	return iPairs;
 }
 
-bool Game::AskCard(Player* _current_player, Player* _next_player)
+bool Game::AskCard(Player* _current_player, Player** _next_player)
 {
+	//jump out when current player's hand is empty
+	if (0 == _current_player->GetNumCards())
+		return false;
+	int p = 0;// Player to be asked
 	int iFace = 0;
+
 	if (NULL == dynamic_cast<Computer*>(_current_player))
 	{
 		//Human player behavior
 		cout << "What do you want? _\b";
+		//check if the card the player asking for is in its hand or not
 		while (!(cin >> iFace))
 		{
 			bool inHand = false;
@@ -282,55 +290,75 @@ bool Game::AskCard(Player* _current_player, Player* _next_player)
 			cin.clear();
 			cin.sync();
 		}
-		for (int i = 0; i < _next_player->GetNumCards(); i++)
+		// validation for choice of player index
+		do
 		{
-			if (_next_player->GetCard(i, *m_player_temp))
+			cin.clear();
+			cin.sync();
+			cout << "Choose a player to ask for (0 - 3) _\b";
+		} while (!(cin >> p) && (p < 0 || p > 3 || _next_player[p] == _current_player));
+		
+		//jump out when player's is being asked hand is empty
+		if (0 == _next_player[p]->GetNumCards())
+			return false;
+		
+		for (int i = 0; i < _next_player[p]->GetNumCards(); i++)
+		{
+			if (_next_player[p]->GetCard(i, *m_player_temp))
 			{
 				if (m_player_temp->GetFace() == iFace)
 				{
-					_next_player->Discard(i, *m_player_temp);
+					
 					for (int j = 0; j < _current_player->GetNumCards(); j++)
 					{
 						_current_player->GetCard(j, *m_player_temp);
 						if (m_player_temp->GetFace() == iFace)
+						{
+							_next_player[p]->Discard(i, *m_player_temp);
 							_current_player->Discard(j, *m_player_temp);
+							_current_player->AddToScore(1);
+							return true;
+						}
 					}
-					_current_player->AddToScore(1);
-					return true;
 				}
 			}
 		}
 		return false;
 	}
-	else if (NULL == _next_player)
-		return false;
 	else
 	{
 		// Computer behavior
-		int iMin{ 0 }, iMax{ 0 };
-		_current_player->SortCardsbyNum();
-		_current_player->GetCard(0, *m_player_temp);
-		iMin = m_player_temp->GetFace();
-		_current_player->GetCard(_current_player->GetNumCards() - 1, *m_player_temp);
-		iMax = m_player_temp->GetFace();
-
-		iFace = rand() % (iMax - iMin + 1);
-		cout << _current_player->GetName() << " is asking for: " << iFace << endl;
-		for (int i = 0; i < _next_player->GetNumCards(); i++)
+		do
 		{
-			if (_next_player->GetCard(i, *m_player_temp))
+			p = rand() % 4;
+		} while (p < 0 || p > 3 || _next_player[p] == _current_player);
+		//jump out when player's is being asked hand is empty
+		if (0 == _next_player[p]->GetNumCards())
+			return false;
+
+		int iCount{ 0 };		
+		iCount = rand() % _current_player->GetNumCards();
+		_current_player->GetCard(iCount, *m_player_temp);
+		iFace = m_player_temp->GetFace();
+		cout << _current_player->GetName() << " is asking " << _next_player[p]->GetName() << " for: " << iFace << endl;
+
+		for (int i = 0; i < _next_player[p]->GetNumCards(); i++)
+		{
+			if (_next_player[p]->GetCard(i, *m_player_temp))
 			{
 				if (m_player_temp->GetFace() == iFace)
 				{
-					_next_player->Discard(i, *m_player_temp);
 					for (int j = 0; j < _current_player->GetNumCards(); j++)
 					{
 						_current_player->GetCard(j, *m_player_temp);
 						if (m_player_temp->GetFace() == iFace)
+						{
+							_next_player[p]->Discard(i, *m_player_temp);
 							_current_player->Discard(j, *m_player_temp);
+							_current_player->AddToScore(1);
+							return true;
+						}
 					}
-					_current_player->AddToScore(1);
-					return true;
 				}
 			}
 		}
@@ -381,15 +409,6 @@ void Game::MenuCursor()
 				break;
 			}
 		}
-		Console::Lock(false);
 	}
 }
 
-void Game::ShowHands(Player* _player)
-{
-	if (0 != _player->GetNumCards())
-	{
-		cout << endl << _player->GetName() << " currently has:" << endl;
-		_player->Show();
-	}
-}

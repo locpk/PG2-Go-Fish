@@ -30,7 +30,20 @@ void Computer::Show() const
 	for (int i = 0; i < Player::GetNumCards(); i++)
 	{
 		Player::GetCard(i, tempCard);
-		cout << "XX" << "\t";
+		if (tempCard.GetFace() == 14)
+			cout << "\t" << "A" << tempCard.GetSuit() << "\t";
+		cout << "\t" << tempCard.GetFace() << tempCard.GetSuit() << "\t";
+		/*cout << "--------------" << endl
+			<< "| " << ((tempCard.GetFace() == 14) ? 'A' : tempCard.GetFace()) << tempCard.GetSuit() << "        |" << endl
+			<< "|            |" << endl
+			<< "|            |" << endl
+			<< "|            |" << endl
+			<< "|            |" << endl
+			<< "|            |" << endl
+			<< "|            |" << endl
+			<< "|         " << tempCard.GetFace() << tempCard.GetSuit() << "|" << endl
+			<< "--------------" <<endl;*/
+		//cout << "XX" << "\t";
 	}
 	cout << endl;
 	Console::ResetColor();

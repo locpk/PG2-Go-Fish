@@ -143,7 +143,6 @@
     <ClCompile Include="src\TimeConstraint.cpp" />
     <ClCompile Include="src\TimeHelpers.cpp" />
     <ClCompile Include="src\XmlTestReporter.cpp" />
-    <ClCompile Include="Stack.cpp" />
     <ClCompile Include="TestManager.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -25,6 +25,7 @@ Player::Player(const char* _name, int _maxCards) : m_maxCards(_maxCards)
 
 	m_hand = new Card[_maxCards];
 
+	isPlaying = false;
 	m_numCards = 0;
 	m_score = 0;
 }
@@ -51,7 +52,7 @@ Player::Player(const Player& _obj) : m_maxCards(_obj.m_maxCards)
 	//shallow copy the rest members
 	m_numCards = _obj.m_numCards;
 	m_score = _obj.m_score;
-	
+	isPlaying = _obj.isPlaying;
 }
 
 
@@ -96,6 +97,7 @@ Player& Player::operator =(const Player& _obj)
 		//shallow copy the rest members
 		m_numCards = _obj.m_numCards;
 		m_score = _obj.m_score;
+		isPlaying = _obj.isPlaying;
 	}
 	return *this;
 }
