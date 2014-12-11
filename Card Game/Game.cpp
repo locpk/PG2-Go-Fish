@@ -106,11 +106,14 @@ void Game::Run()
 			}
 
 			
-			
+			cin.clear();
+			cin.ignore(LLONG_MAX,'\n');
 			SetState(GAME_MENU);
 			break;
 		case GAME_MENU:
 			// Insert menu code here.
+			cout << "Loading...";
+			Sleep(6000);
 			Console::Clear();
 			cout << getFileContents(m_title_art);
 			/*_¦¦¦¦¦¦_   _¦¦¦¦¦¦_          _¦¦¦¦¦¦¦¦  _¦     _¦¦¦¦¦¦¦¦    _¦    ¦_
@@ -311,7 +314,8 @@ bool Game::AskCard(Player* _current_player, Player* _next_player)
 		_current_player->GetCard(_current_player->GetNumCards() - 1, *m_player_temp);
 		iMax = m_player_temp->GetFace();
 
-		iFace = rand() % iMax + iMin;
+		iFace = rand() % (iMax - iMin + 1);
+		cout << _current_player->GetName() << " is asking for: " << iFace << endl;
 		for (int i = 0; i < _next_player->GetNumCards(); i++)
 		{
 			if (_next_player->GetCard(i, *m_player_temp))

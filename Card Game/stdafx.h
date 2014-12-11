@@ -20,6 +20,7 @@
 #include <fstream>
 #include <algorithm>
 #include <string>
+#include <random>
 using namespace std;
 
 #include <cstdlib>

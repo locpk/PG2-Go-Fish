@@ -27,7 +27,7 @@ private:
 	/* TODO Lab5:
 			Update m_maxCards to be a const data member
 	*/
-	int m_maxCards;				// The number of cards the player can store (the number of elements in Hand)
+	const int m_maxCards;				// The number of cards the player can store (the number of elements in Hand)
 	int m_score;				// For "Go Fish," this will represent the number of pairs.  For "UNO," it will be the player's accumulated score
 
 public:

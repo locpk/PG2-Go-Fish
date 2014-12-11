@@ -12,7 +12,7 @@ bool SortByFace(Card const & L, Card const &  R) { return L < R; }
 // In:	_name			The player's name
 //		_maxCards		The maximum number of cards they can store
 
-Player::Player(const char* _name, int _maxCards)
+Player::Player(const char* _name, int _maxCards) : m_maxCards(_maxCards)
 {
 	/* TODO Lab2/4:
 			Fill out the constructor body.
@@ -23,7 +23,6 @@ Player::Player(const char* _name, int _maxCards)
 	m_name = new char[len];
 	strcpy_s(m_name, len, _name);
 
-	m_maxCards = _maxCards;
 	m_hand = new Card[_maxCards];
 
 	m_numCards = 0;
@@ -35,7 +34,7 @@ Player::Player(const char* _name, int _maxCards)
 
 		Make sure to copy all data members (using deep copies when necessary).
 */
-Player::Player(const Player& _obj)
+Player::Player(const Player& _obj) : m_maxCards(_obj.m_maxCards)
 {
 	//deep copy m_name and m_hand
 	int len = strlen(_obj.m_name) + 1;
@@ -50,7 +49,6 @@ Player::Player(const Player& _obj)
 	}
 	
 	//shallow copy the rest members
-	m_maxCards = _obj.m_maxCards;
 	m_numCards = _obj.m_numCards;
 	m_score = _obj.m_score;
 	
@@ -96,7 +94,6 @@ Player& Player::operator =(const Player& _obj)
 		}
 
 		//shallow copy the rest members
-		m_maxCards = _obj.m_maxCards;
 		m_numCards = _obj.m_numCards;
 		m_score = _obj.m_score;
 	}
