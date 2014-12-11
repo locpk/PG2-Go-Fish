@@ -22,8 +22,10 @@ Player::Player(const char* _name, int _maxCards)
 	int len = strlen(_name) + 1;
 	m_name = new char[len];
 	strcpy_s(m_name, len, _name);
-	m_hand = new Card[_maxCards];
+
 	m_maxCards = _maxCards;
+	m_hand = new Card[_maxCards];
+
 	m_numCards = 0;
 	m_score = 0;
 }

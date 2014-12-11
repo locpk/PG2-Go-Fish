@@ -1,4 +1,5 @@
 ﻿#include "Game.h"
+//define menu layout positions
 #define CURSORLEFT Console::WindowWidth() /2 -5
 #define STARTBUTTON 13
 #define QUITBUTTON 14
@@ -59,6 +60,8 @@ void Game::Run()
 			m_numPlayers++;
 			m_players[1] = new Computer;
 			m_numPlayers++;
+
+			m_Deck.Shuffle();
 			
 			//draw 7 card for player 0
 			for (size_t i = 0; i < 7; i++)
@@ -105,13 +108,22 @@ void Game::Run()
 			{
 				if (m_currPlayer == m_numPlayers || NULL == m_players[m_currPlayer] ) //reset players let them take turns
 					m_currPlayer = 0;
+
 				Score(m_players[m_currPlayer]); // check pairs
-				ShowHands(m_players[m_currPlayer]);
-				if (m_Deck.IsEmpty() && m_players[m_currPlayer]->GetNumCards() == 0) // game over condition without allowing quiting game
+				Sleep(1500);
+				Console::Clear();
+				cout << "Pairs Checked!" << endl;
+				if (1 == m_currPlayer)
 				{
-					SetState(GAME_END);
-					break;
+					ShowHands(m_players[m_currPlayer]);
+					ShowHands(m_players[m_currPlayer - 1]);
 				}
+				else
+				{
+					ShowHands(m_players[m_currPlayer]);
+					ShowHands(m_players[m_currPlayer + 1]);
+				}
+
 				if (0 == m_players[m_currPlayer]->GetNumCards())
 				{
 					for (size_t i = 0; i < 7; i++)
@@ -120,20 +132,30 @@ void Game::Run()
 							m_players[m_currPlayer]->AddCard(*m_deck_temp);
 					}
 				}
-				if (1 == m_currPlayer) // for two players
+				if (m_Deck.IsEmpty() && 0 == m_players[0]->GetNumCards() || 0 == m_players[1]->GetNumCards()) // game over condition without allowing quiting game
+				{
+					SetState(GAME_END);
+					break;
+				}
+
+				if (1 == m_currPlayer) // if current player is the second player
 				{
 					if (!AskCard(m_players[m_currPlayer], m_players[m_currPlayer - 1])) // if ask card fails draw from deck
 					{
 						if (m_Deck.Draw(*m_deck_temp))
 							m_players[m_currPlayer]->AddCard(*m_deck_temp);
-						//cout << endl << "Ask fails, Draw from deck" << endl;
+						cout << endl << m_players[m_currPlayer]->GetName() << " draws from the deck." << endl;
 					}
 				}
-				if (!AskCard(m_players[m_currPlayer], m_players[m_currPlayer + 1])) // if ask card fails draw from deck
+				// if current player is the first player
+				else
 				{
-					if (m_Deck.Draw(*m_deck_temp))
-						m_players[m_currPlayer]->AddCard(*m_deck_temp);
-					//cout << endl << "Ask fails, Draw from deck" << endl;
+					if (!AskCard(m_players[m_currPlayer], m_players[m_currPlayer + 1])) // if ask card fails draw from deck
+					{
+						if (m_Deck.Draw(*m_deck_temp))
+							m_players[m_currPlayer]->AddCard(*m_deck_temp);
+						cout << endl << m_players[m_currPlayer]->GetName() << " draws from the deck." << endl;
+					}
 				}
 				
 			}
@@ -189,6 +211,7 @@ int Game::Score(Player* _player)
 		_player->GetCard(i, *m_pair_check1);
 		for (int j = i + 1; j < _player->GetNumCards(); j++)
 		{
+			
 			_player->GetCard(j, *m_pair_check2);
 			if (m_pair_check1->GetFace() == m_pair_check2->GetFace())
 			{
@@ -208,7 +231,7 @@ int Game::Score(Player* _player)
 bool Game::AskCard(Player* _current_player, Player* _next_player)
 {
 	int iFace = 0;
-	if (dynamic_cast<Computer*>(_current_player) == NULL)
+	if (NULL == dynamic_cast<Computer*>(_current_player))
 	{
 		//Human player behavior
 		cout << "What do you want? _\b";

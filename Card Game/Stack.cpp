@@ -1,8 +1,8 @@
 #include "Stack.h"
 #include "stdafx.h"
 
-// Def ctor
-// Creates an empty list
+// Default ctor
+// Create an empty stack
 Stack::Stack()
 {
 	m_top = NULL;
@@ -15,16 +15,14 @@ Stack::~Stack()
 	Clear();
 }
 
-
 // Add something to the top of the stack
 // In:	_info		The value to add
-//
-// Return: True, if successful
+// 
+// Return: True, if something was added
 bool Stack::Push(const Item& _info)
 {
-	// Every time you add something to a list, you need
-	// to allocate the space for it
-	node* newTop = new node;
+	// Need to allocate memory every time we add something
+	Node* newTop = new Node;
 
 	// Did we run out of memory?
 	if (NULL == newTop)
@@ -32,67 +30,53 @@ bool Stack::Push(const Item& _info)
 
 	// Fill in the node
 	newTop->m_data = _info;
-
-	// Link it into the list
+	// Put this node on top of all the other nodes
 	newTop->m_next = m_top;
 
+	// Update the top ptr
 	m_top = newTop;
-
+	
 	// Success
-	m_currSize++;
+	++m_currSize;
 	return true;
 }
 
-// Remove the top thing from the stack
-// In:	_info		A "blank" value
+// Remove the top-most value from the stack
+// In:	_info		A 'blank' value
 //
-// Out: _info		The value that was at the top
+// Out:	_info		The value that was at the top
 // Return: True, if something was removed
 bool Stack::Pop(Item& _info)
 {
-	// Check to see if the list is empty
+	// Is the list empty?
 	if (!m_top)
 		return false;
 
-	// Copy over the value
+	// Copy the value over
 	_info = m_top->m_data;
 
-	// Store the top pointer so that we don't leak memory
-	node* temp = m_top;
-
-	// Update the top pointer
+	// Need a temporary ptr to avoid a memory leak
+	Node* temp = m_top;
 	m_top = m_top->m_next;
-
-	// Clean up the memory
 	delete temp;
 
-	// Success
+	// Success!
 	--m_currSize;
 	return true;
+
 }
 
-// Clear the stack for re-use
+// Clear out the stack for re-use
 void Stack::Clear()
 {
-	while (m_top)
+	// Clean up any left over dynamic memory
+	while (m_top != NULL)
 	{
-		// Store the top pointer so that we don't leak memory
-		node* temp = m_top;
-
-		// Update the top pointer
+		// Need a temporary ptr to avoid a memory leak
+		Node* temp = m_top;
 		m_top = m_top->m_next;
-
-		// Clean up the memory
 		delete temp;
 	}
 
-	// Reset the size
 	m_currSize = 0;
-}
-
-// Look at the top-most piece of data without removing it
-const Item* Stack::Peek() const
-{
-	// Send back the Item at the top, or NULL if the list is empty
-	return (m_top ? &m_top->m_data : NULL);
 }

@@ -1,62 +1,55 @@
 #pragma once
-#include "Card.h"
+#include"Card.h"
 /*
 	Stacks use FILO (First In, Last Out) ordering
-			   LIFO (Last In, First Out
+			   LIFO (Last In, First Out)
 
-		Ex:	Toilet paper, boxes, Pringles, bullets in a magazine
+		Ex:	PEZ dispenser, Magic:The Gathering, gun magazine
 
 */
 
-// Provides an alias for a datatype
-typedef Card Item;	// similar to "#define Item float"
+typedef Card Item;	// A way to provide an alias for a datatype
 
-// A singly-linked list using FILO ordering
+// A FILO sequence implemented using a singly-linked list
 class Stack
 {
 private:
 
-	struct node
+	struct Node
 	{
-		Item m_data;	// The thing we're storing (the "element")
-		node* m_next;	// The next node in the list
+		Item m_data;	// A piece of information
+		Node* m_next;	// Next node in the list
 	};
 
-	// Initializing a struct
-	// node n = { 5, NULL };
+	Node* m_top;		// The newest node in the list
 
-	node* m_top;		// Newest thing in the list
-	int m_currSize;		// Size of the list
+	int m_currSize;		// Keep track of the number allocated
 
 public:
 
-	// Def ctor
-	// Creates an empty list
+	// Default ctor
+	// Create an empty stack
 	Stack();
 
 	// Dtor
 	~Stack();
 
-	// Get the current size
 	int GetCurrSize() const { return m_currSize;  }
 
 	// Add something to the top of the stack
 	// In:	_info		The value to add
-	//
-	// Return: True, if successful
+	// 
+	// Return: True, if something was added
 	bool Push(const Item& _info);
 
-	// Remove the top thing from the stack
-	// In:	_info		A "blank" value
+	// Remove the top-most value from the stack
+	// In:	_info		A 'blank' value
 	//
-	// Out: _info		The value that was at the top
+	// Out:	_info		The value that was at the top
 	// Return: True, if something was removed
 	bool Pop(Item& _info);
 
-	// Clear the stack for re-use
+	// Clear out the stack for re-use
 	void Clear();
-
-	// Look at the top-most piece of data without removing it
-	const Item* Peek() const;
 };
 

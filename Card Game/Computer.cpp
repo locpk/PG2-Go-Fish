@@ -2,7 +2,7 @@
 
 // Default ctor
 Computer::Computer(const char* _name)
-	: Player(_name, 52)
+	: Player(_name)
 {
 	/* TODO Lab2:
 			Implement this method.

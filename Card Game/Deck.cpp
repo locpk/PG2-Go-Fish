@@ -8,7 +8,7 @@ Deck::Deck()
 			Get everything set up by calling Initialize.
 	*/
 	Initialize();
-	Shuffle();
+	
 }
 
 Deck::~Deck()
@@ -109,7 +109,7 @@ bool Deck::IsEmpty() const
 	/* TODO Lab3:
 			Implement this method.
 	*/
-	if (NULL == m_Stack.Peek())
+	if (0 == m_Stack.GetCurrSize())
 		return true;
 	// Just here for compilation
 	else

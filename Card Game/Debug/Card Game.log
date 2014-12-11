@@ -1,8 +1,25 @@
-﻿Build started 12/9/2014 16:37:37.
+﻿Build started 12/10/2014 20:47:36.
      1>Project "C:\Users\Tom\OneDrive\Full Sail\Lectures\Programming II\PG2 Project\Card Game\Card Game.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Game.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Card.cpp Computer.cpp Deck.cpp Game.cpp Human.cpp Lab1_Test.cpp Lab2_Test.cpp Lab3_Test.cpp Lab4_Test.cpp Lab5_Test.cpp Lab7_Test.cpp Player.cpp Stack.cpp TestManager.cpp main.cpp
+         Card.cpp
+         Generating Code...
+         Compiling...
+         main.cpp
+         TestManager.cpp
+         Stack.cpp
+         Player.cpp
+         Lab7_Test.cpp
+         Lab5_Test.cpp
+         Lab4_Test.cpp
+         Lab3_Test.cpp
+         Lab2_Test.cpp
+         Lab1_Test.cpp
+         Human.cpp
          Game.cpp
+         Deck.cpp
+         Computer.cpp
+         Generating Code...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Tom\OneDrive\Full Sail\Lectures\Programming II\PG2 Project\Debug\Card Game.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Tom\OneDrive\Full Sail\Lectures\Programming II\PG2 Project\Debug\Card Game.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Tom\OneDrive\Full Sail\Lectures\Programming II\PG2 Project\Debug\Card Game.lib" /MACHINE:X86 Debug\Card.obj
          Debug\Computer.obj
@@ -42,4 +59,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.01
+Time Elapsed 00:00:10.34

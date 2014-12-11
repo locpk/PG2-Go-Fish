@@ -2,7 +2,7 @@
 
 // Default ctor
 Human::Human(const char* _name) 
-	: Player(_name,52)
+	: Player(_name)
 {
 	/* TODO Lab2:
 	Implement this method.
