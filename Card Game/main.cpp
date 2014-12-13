@@ -7,7 +7,6 @@
 #include "stdafx.h"
 
 #include "TestManager.h"
-
 #include "Game.h"
 
 /***********/
@@ -46,13 +45,16 @@ int main(int, const char*[])
 	UnitTest::RunAllTests();
 #elif LAB7
 	UnitTest::RunAllTests();
-#eliF GAME
+#elif FALSE
 	Game game;
 	game.Run();
 #endif
 	
 
 #if GAME
+	Console::SetWindowSize(100, 50);
+	Console::SetBufferSize(Console::WindowWidth(),Console::WindowHeight());
+	
 	Game game;
 	game.Run();
 #else
@@ -63,27 +65,5 @@ int main(int, const char*[])
 	cout << "\n\n";
 	system("pause");
 	return 0;
-#if 0
-	// start the sound engine with default parameters
-	ISoundEngine* engine = createIrrKlangDevice();
-
-	if (!engine)
-		return 0; // error starting up the engine
-
-	// play some sound stream, looped
-	engine->play2D("TheForestAwakes.ogg", true);
-
-	char i = 0;
-
-	while (i != 'q')
-	{
-		std::cout << "Press any key to play some sound, press 'q' to quit.\n";
-
-		std::cin >> i; // wait for user to press some key
-	}
-
-	engine->drop(); // delete engine
-	return 0;
-#endif
 }
 

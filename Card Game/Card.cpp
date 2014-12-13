@@ -106,19 +106,19 @@ ostream& operator<<(ostream& os, const Card& rhs)
 	switch (rhs.m_face)
 	{
 	case 11:
-		os << 'J' << ' ' << rhs.m_suit;
+		os << 'J'<< rhs.m_suit;
 		break;
 	case 12:
-		os << 'Q' << ' ' << rhs.m_suit;
+		os << 'Q'<< rhs.m_suit;
 		break;
 	case 13:
-		os << 'K' << ' ' << rhs.m_suit;
+		os << 'K'<< rhs.m_suit;
 		break;
 	case 14:
-		os << 'A' << ' ' << rhs.m_suit;
+		os << 'A'<< rhs.m_suit;
 		break;
 	default:
-		os << rhs.m_face << ' ' << rhs.m_suit;
+		os << rhs.m_face<< rhs.m_suit;
 		break;
 	}
 	

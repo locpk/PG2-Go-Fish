@@ -220,5 +220,13 @@
     <Text Include="asc.txt">
       <Filter>Source Files</Filter>
     </Text>
+    <Text Include="asc2.txt">
+      <Filter>Source Files</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="irrKlang.dll">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

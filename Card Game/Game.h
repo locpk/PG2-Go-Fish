@@ -30,10 +30,12 @@ class Game
 	// Add game data members as necessary
 	int isComputer;
 	ifstream m_title_art;
-	const char* m_filename = "asc.txt";
+	const char* m_filename;
 	Card m_temp_card1;
 	Card m_temp_card2;
 	ISoundEngine* engine;
+	int m_Winner;
+	int m_MaxScore;
 public:
 	// Default ctor
 	Game();
@@ -53,4 +55,5 @@ public:
 	 int Score(Player* _player);
 	 bool AskCard(Player* _current_player, Player** _next_player);
 	 void MenuCursor();
+	 std::string getFileContents(std::ifstream&);
 };

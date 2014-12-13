@@ -53,7 +53,7 @@ public:
 		TODO Lab2:
 			Make sure that all destructors are called in the case of upcast objects.
 	*/
-	virtual ~Player();
+	virtual ~Player() = 0;
 
 	/* TODO Lab4:
 			Prototype the assignment operator
@@ -119,7 +119,7 @@ public:
 	/* TODO Lab2:
 			Allow this method to be overridden in child classes.
 	*/
-	virtual	void Show() const;
+	virtual	void Show() const = 0;
 	
 	// Needed for unit tests
 	// DO NOT REMOVE

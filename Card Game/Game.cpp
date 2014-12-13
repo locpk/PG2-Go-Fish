@@ -3,11 +3,11 @@
 #define CURSORLEFT Console::WindowWidth() /2 -5
 #define STARTBUTTON 13
 #define QUITBUTTON 14
-std::string getFileContents(std::ifstream&);
+
 // Default ctor
-Game::Game()
+Game::Game() : m_filename("asc.txt")
 {
-	m_state = GAME_INIT;
+	m_state = GAME_MENU;
 	for (size_t i = 0; i < 4; i++)
 	{
 		m_players[i] = nullptr;
@@ -20,7 +20,7 @@ Game::Game()
 	engine = createIrrKlangDevice();
 	Console::Clear();
 	Console::Lock(false);
-	
+
 }
 
 // Dtor
@@ -39,37 +39,45 @@ void Game::Run()
 	bool bRun = true;
 
 	// Loop while our bool remains true.
-	while(bRun)
+	while (bRun)
 	{
 		//test different state 
-		
-		
-		switch(m_state)
+
+
+		switch (m_state)
 		{
 		case GAME_INIT:
-			
+
 			// Insert initialization code here.
 			while (m_numPlayers < 2 || m_numPlayers > 4)
 			{
-				cout << "How many players? (2 - 4)";
-				while (!(cin >> m_numPlayers))
+				for (;;)
 				{
-					cout << "invalid input";
+					cout << "How many players? (2 - 4)";
+					if (cin >> m_numPlayers)
+					{
+						cin.sync();
+						break;
+					}
 					cin.clear();
 					cin.sync();
 				}
+
 			}
 
 			for (int i = 0; i < m_numPlayers; i++)
 			{
-				cout << "Player " << i + 1 << " is computer? (0 for NO, 1 for YES)";
-				while (!(cin >> isComputer) || (isComputer != 0 && isComputer != 1))
+				for (;;)
 				{
-					cout << "invalid input";
+					cout << "Player " << i + 1 << " is computer? (0 for NO, 1 for YES)";
+					if (cin >> isComputer && (isComputer == 0 || isComputer == 1))
+					{
+						cin.sync();
+						break;
+					}
 					cin.clear();
 					cin.sync();
 				}
-				
 				if (1 == isComputer)
 				{
 					m_players[i] = new Computer(Console::RandomName());
@@ -78,10 +86,10 @@ void Game::Run()
 				{
 					m_players[i] = new Human;
 				}
-				
+
 			}
-			
-			
+
+			//initialize player's hands
 			for (int i = 0; i < m_numPlayers; i++)
 			{
 				//draw 7 card for the player 
@@ -92,19 +100,18 @@ void Game::Run()
 				}
 
 			}
-
-			
-			cin.clear();
-			cin.ignore(LLONG_MAX,'\n');
-			SetState(GAME_MENU);
+			Console::Clear();
+			Console::SetCursorPosition(Console::WindowWidth() /4 ,Console::WindowHeight()/2);
+			cout << ">_<...I'm "<< "Loading...I wish I am a Quantum computer.";
+			Sleep(1500);
+			SetState(GAME_PLAY);
 			break;
 		case GAME_MENU:
 			// Insert menu code here.
 			Console::FlushKeys();
-			cout << "Loading...I wish I am a Quantum computer.";
-			Sleep(1500);
+
 			engine->play2D("TheForestAwakes.ogg", true);
-			
+
 			Console::Clear();
 			cout << getFileContents(m_title_art);
 			/*_¦¦¦¦¦¦_   _¦¦¦¦¦¦_          _¦¦¦¦¦¦¦¦  _¦     _¦¦¦¦¦¦¦¦    _¦    ¦_
@@ -115,15 +122,15 @@ void Game::Run()
 				¦¦¦    ¦¦¦ ¦¦¦    ¦¦¦        ¦¦¦        ¦¦¦           ¦¦¦   ¦¦¦    ¦¦¦
 				¦¦¦    ¦¦¦ ¦¦¦    ¦¦¦        ¦¦¦        ¦¦¦     _¦    ¦¦¦   ¦¦¦    ¦¦¦
 				¦¦¦¦¦¦¦¦¯   ¯¦¦¦¦¦¦¯         ¦¦¦        ¦¯    _¦¦¦¦¦¦¦¦¯    ¦¦¦    ¦¯*/
-
+			
 			Console::SetCursorPosition(CURSORLEFT, STARTBUTTON);
 			cout << ">>      " << "Start\n";
 			Console::SetCursorPosition(CURSORLEFT, QUITBUTTON);
 			cout << ">>      " << "Quit\n";
 			Console::SetCursorPosition(CURSORLEFT, STARTBUTTON);
 			MenuCursor();
-			Console::CursorVisible(false);
 			engine->drop(); // delete engine
+			Console::FlushKeys();
 			break;
 		case GAME_PLAY:
 			// Insert game play code here.
@@ -135,7 +142,7 @@ void Game::Run()
 				if (m_Deck.IsEmpty())
 				{
 					bool keep = false;
-					for (size_t i = 0; i < m_numPlayers; i++)
+					for (int i = 0; i < m_numPlayers; i++)
 					{
 						if (m_players[i]->GetNumCards() != 0)
 							keep = true;
@@ -150,8 +157,9 @@ void Game::Run()
 				if (m_players[m_currPlayer]->IsPlaying())
 				{
 					m_players[m_currPlayer]->SortCardsbySuit();
-					cin.get();
-					//Sleep(1500);
+					//uncomment next and hold return key to quick run through a AI vs AI game
+					//cin.get();
+					Sleep(1500);
 					Console::Clear();
 
 					//show each player's hand
@@ -184,27 +192,24 @@ void Game::Run()
 						cout << endl << m_players[m_currPlayer]->GetName() << " draws from the deck. a " << m_temp_card1 << endl;
 					}
 					Score(m_players[m_currPlayer]); // check pairs 
-				}	
+				}
 			}
 			SetState(GAME_END);
-			break;
-		case GAME_END:
-			// The game is over, change the bool to stop the loop.
-			Console::BackgroundColor(Blue);
+			//Match result
+			
 			Console::Clear();
 			Console::SetCursorPosition(Console::WindowWidth() / 3, Console::WindowHeight() / 3);
-			
 			cout << "Game ENDs!" << endl;
 			Sleep(1500);
-			int iWinner{ 0 }, iMaxScore{0};
 			for (int i = 0; i < m_numPlayers; i++)
 			{
-				if (m_players[i]->GetScore() > iMaxScore)
+				if (m_players[i]->GetScore() > m_MaxScore)
 				{
-					iMaxScore = m_players[i]->GetScore();
-					iWinner = i;
+					m_MaxScore = m_players[i]->GetScore();
+					m_Winner = i;
 				}
 				Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 3);
+				//do a type machine trick
 				std::string str1 = m_players[i]->GetName();
 				std::string str2 = "'s FINAL SCORE is: ";
 				std::string str3 = std::to_string(m_players[i]->GetScore());
@@ -213,14 +218,19 @@ void Game::Run()
 					cout << c;
 					Sleep(60);
 				}
+
 				Sleep(1500);
 				Console::Clear();
-				
+
 			}
 			Console::ForegroundColor(Red);
 			Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 3);
-			cout << "The Winner is : " << m_players[iWinner]->GetName() << " , scored " << m_players[iWinner]->GetScore() << endl;
+			cout << "The Winner is : " << m_players[m_Winner]->GetName() << " , scored " << m_players[m_Winner]->GetScore() << endl;
 			Sleep(6000);
+			break;
+		case GAME_END:
+			// The game is over, change the bool to stop the loop.
+
 			bRun = false;
 			Console::ResetColor();
 			Console::Clear();
@@ -236,7 +246,7 @@ void Game::Run()
 	}
 }
 
-std::string getFileContents(std::ifstream& File)
+std::string Game::getFileContents(std::ifstream& File)
 {
 	std::string Lines = "";        //All lines
 
@@ -260,7 +270,7 @@ std::string getFileContents(std::ifstream& File)
 
 int Game::Score(Player* _player)
 {
-	int iPairs{0};
+	int iPairs{ 0 };
 	//pair checking
 	for (int i = 0; i < _player->GetNumCards(); i++)
 	{
@@ -293,7 +303,7 @@ bool Game::AskCard(Player* _current_player, Player** _next_player)
 	if (NULL == dynamic_cast<Computer*>(_current_player))
 	{
 		//Human player behavior
-		cout << "What do you want? _\b";
+		cout << _current_player->GetName() << " What do you want? _\b";
 		//check if the card the player asking for is in its hand or not
 		while (!(cin >> iFace) || iFace > 14 || iFace < 0)
 		{
@@ -313,13 +323,19 @@ bool Game::AskCard(Player* _current_player, Player** _next_player)
 		{
 			cin.clear();
 			cin.sync();
-			cout << "Choose a player to ask for (0 - 3) _\b";
+			cout << "Choose a player to ask for  _\b";
+			for (int i = 0; i < m_numPlayers; i++)
+			{
+				cout << endl;
+				if (m_players[i] != _current_player)
+					cout << i << ") "<< m_players[i]->GetName() << endl;
+			}
 		} while (!(cin >> p) || (p < 0 || p >= m_numPlayers || _next_player[p] == _current_player));
-		
+
 		//jump out when player's is being asked hand is empty
 		if (0 == _next_player[p]->GetNumCards())
 			return false;
-		
+
 		cout << _current_player->GetName() << " is asking " << _next_player[p]->GetName() << " for: " << iFace << endl;
 
 		for (int i = 0; i < _next_player[p]->GetNumCards(); i++)
@@ -345,11 +361,30 @@ bool Game::AskCard(Player* _current_player, Player** _next_player)
 		if (0 == _next_player[p]->GetNumCards())
 			return false;
 
-		int iCount{ 0 };		
+		int iCount{ 0 };
 		iCount = rand() % _current_player->GetNumCards();
 		_current_player->GetCard(iCount, m_temp_card1);
 		iFace = m_temp_card1.GetFace();
-		cout << _current_player->GetName() << " is asking " << _next_player[p]->GetName() << " for: " << iFace << endl;
+
+		cout << _current_player->GetName() << " is asking " << _next_player[p]->GetName() << " for: ";
+		switch (iFace)
+		{
+		case 11:
+			cout << 'J' << ' ' << endl;
+			break;
+		case 12:
+			cout << 'Q' << ' ' << endl;
+			break;
+		case 13:
+			cout << 'K' << ' ' << endl;
+			break;
+		case 14:
+			cout << 'A' << ' ' << endl;
+			break;
+		default:
+			cout << iFace << ' ' << endl;
+			break;
+		}
 
 		for (int i = 0; i < _next_player[p]->GetNumCards(); i++)
 		{
@@ -404,7 +439,7 @@ void Game::MenuCursor()
 			else
 			{
 				Console::Clear();
-				SetState(GAME_PLAY);
+				SetState(GAME_INIT);
 				break;
 			}
 		}

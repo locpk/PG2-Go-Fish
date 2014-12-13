@@ -43,7 +43,7 @@ Player::Player(const Player& _obj) : m_maxCards(_obj.m_maxCards)
 	strcpy_s(m_name, len, _obj.m_name);
 
 	m_hand = new Card[_obj.m_maxCards];
-	//memcpy(m_hand, _obj.m_hand, sizeof(Card)*_obj.m_numCards);
+	
 	for (int i = 0; i < _obj.GetNumCards(); i++)
 	{
 		m_hand[i] = _obj.m_hand[i];
@@ -88,13 +88,14 @@ Player& Player::operator =(const Player& _obj)
 		strcpy_s(m_name, len, _obj.m_name);
 
 		m_hand = new Card[_obj.m_maxCards];
-		//memcpy(m_hand, _obj.m_hand, sizeof(Card)*_obj.m_numCards);
+		
 		for (int i = 0; i < _obj.GetNumCards(); i++)
 		{
 			m_hand[i] = _obj.m_hand[i];
 		}
 
 		//shallow copy the rest members
+		//m_maxCards = _obj.m_maxCards;
 		m_numCards = _obj.m_numCards;
 		m_score = _obj.m_score;
 		isPlaying = _obj.isPlaying;
