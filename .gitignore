@@ -71,3 +71,6 @@ $RECYCLE.BIN/
 *.msp
 *.sdf
 *.suo
+
+# Log
+*.tlog
