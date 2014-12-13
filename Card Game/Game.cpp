@@ -15,12 +15,12 @@ Game::Game()
 	m_currPlayer = 0;
 	m_numPlayers = 0;
 	isComputer = 0;
-	m_player_temp = new Card;
-	m_pair_check1 = new Card;
-	m_pair_check2 = new Card;
-	m_pair_discard1 = new Card;
-	m_pair_discard2 = new Card;
 	m_title_art = ifstream(m_filename);
+	Console::Lock(true);
+	engine = createIrrKlangDevice();
+	Console::Clear();
+	Console::Lock(false);
+	
 }
 
 // Dtor
@@ -31,18 +31,6 @@ Game::~Game()
 		delete m_players[i];
 		m_players[i] = nullptr;
 	}
-	//delete m_deck_temp;
-	//m_deck_temp = nullptr;
-	delete m_player_temp;
-	m_player_temp = nullptr;
-	delete m_pair_check1;
-	m_pair_check1 = nullptr;
-	delete m_pair_check2;
-	m_pair_check2 = nullptr;
-	delete m_pair_discard1;
-	m_pair_discard1 = nullptr;
-	delete m_pair_discard2;
-	m_pair_discard2 = nullptr;
 }
 
 void Game::Run()
@@ -99,8 +87,8 @@ void Game::Run()
 				//draw 7 card for the player 
 				for (int j = 0; j < 7; j++)
 				{
-					m_Deck.Draw(m_deck_temp);
-					m_players[i]->AddCard(m_deck_temp);
+					m_Deck.Draw(m_temp_card1);
+					m_players[i]->AddCard(m_temp_card1);
 				}
 
 			}
@@ -115,6 +103,8 @@ void Game::Run()
 			Console::FlushKeys();
 			cout << "Loading...I wish I am a Quantum computer.";
 			Sleep(1500);
+			engine->play2D("TheForestAwakes.ogg", true);
+			
 			Console::Clear();
 			cout << getFileContents(m_title_art);
 			/*_¦¦¦¦¦¦_   _¦¦¦¦¦¦_          _¦¦¦¦¦¦¦¦  _¦     _¦¦¦¦¦¦¦¦    _¦    ¦_
@@ -133,6 +123,7 @@ void Game::Run()
 			Console::SetCursorPosition(CURSORLEFT, STARTBUTTON);
 			MenuCursor();
 			Console::CursorVisible(false);
+			engine->drop(); // delete engine
 			break;
 		case GAME_PLAY:
 			// Insert game play code here.
@@ -141,10 +132,20 @@ void Game::Run()
 				if (m_currPlayer == m_numPlayers) //reset players let them take turns
 					m_currPlayer = 0;
 				// dummy game over condition without allowing quiting game
-				if (m_Deck.IsEmpty() && 0 == m_players[0]->GetNumCards() && 0 == m_players[1]->GetNumCards() && 0 == m_players[2]->GetNumCards() && 0 == m_players[3]->GetNumCards())
+				if (m_Deck.IsEmpty())
 				{
-					SetState(GAME_END);
-					break;
+					bool keep = false;
+					for (size_t i = 0; i < m_numPlayers; i++)
+					{
+						if (m_players[i]->GetNumCards() != 0)
+							keep = true;
+					}
+
+					if (keep == false)
+					{
+						SetState(GAME_END);
+						break;
+					}
 				}
 				if (m_players[m_currPlayer]->IsPlaying())
 				{
@@ -163,8 +164,8 @@ void Game::Run()
 					{
 						for (size_t i = 0; i < 7; i++)
 						{
-							if (m_Deck.Draw(m_deck_temp))
-								m_players[m_currPlayer]->AddCard(m_deck_temp);
+							if (m_Deck.Draw(m_temp_card1))
+								m_players[m_currPlayer]->AddCard(m_temp_card1);
 							else
 							{
 								m_players[m_currPlayer]->SetIsPlaying(false);
@@ -177,10 +178,10 @@ void Game::Run()
 					{
 						cout << "Ask successful! Keep asking." << endl;
 					}
-					if (m_Deck.Draw(m_deck_temp))
+					if (m_Deck.Draw(m_temp_card1))
 					{
-						m_players[m_currPlayer]->AddCard(m_deck_temp);
-						cout << endl << m_players[m_currPlayer]->GetName() << " draws from the deck. a " << m_deck_temp << endl;
+						m_players[m_currPlayer]->AddCard(m_temp_card1);
+						cout << endl << m_players[m_currPlayer]->GetName() << " draws from the deck. a " << m_temp_card1 << endl;
 					}
 					Score(m_players[m_currPlayer]); // check pairs 
 				}	
@@ -263,14 +264,14 @@ int Game::Score(Player* _player)
 	//pair checking
 	for (int i = 0; i < _player->GetNumCards(); i++)
 	{
-		_player->GetCard(i, *m_pair_check1);
+		_player->GetCard(i, m_temp_card1);
 		for (int j = i + 1; j < _player->GetNumCards(); j++)
 		{
-			_player->GetCard(j, *m_pair_check2);
-			if (m_pair_check1->GetFace() == m_pair_check2->GetFace())
+			_player->GetCard(j, m_temp_card2);
+			if (m_temp_card1.GetFace() == m_temp_card2.GetFace())
 			{
-				_player->Discard(j, *m_pair_discard2);
-				_player->Discard(i, *m_pair_discard1);
+				_player->Discard(j, m_temp_card2);
+				_player->Discard(i, m_temp_card1);
 				iPairs++;
 				i = 0;
 				_player->AddToScore(1);
@@ -294,13 +295,13 @@ bool Game::AskCard(Player* _current_player, Player** _next_player)
 		//Human player behavior
 		cout << "What do you want? _\b";
 		//check if the card the player asking for is in its hand or not
-		while (!(cin >> iFace))
+		while (!(cin >> iFace) || iFace > 14 || iFace < 0)
 		{
 			bool inHand = false;
 			for (int i = 0; i < _current_player->GetNumCards(); i++)
 			{
-				_current_player->GetCard(i, *m_player_temp);
-				if (iFace == m_player_temp->GetFace())
+				_current_player->GetCard(i, m_temp_card2);
+				if (iFace == m_temp_card2.GetFace())
 					inHand = true;
 			}
 			cout << "invalid input";
@@ -313,31 +314,22 @@ bool Game::AskCard(Player* _current_player, Player** _next_player)
 			cin.clear();
 			cin.sync();
 			cout << "Choose a player to ask for (0 - 3) _\b";
-		} while (!(cin >> p) && (p < 0 || p > 3 || _next_player[p] == _current_player));
+		} while (!(cin >> p) || (p < 0 || p >= m_numPlayers || _next_player[p] == _current_player));
 		
 		//jump out when player's is being asked hand is empty
 		if (0 == _next_player[p]->GetNumCards())
 			return false;
 		
+		cout << _current_player->GetName() << " is asking " << _next_player[p]->GetName() << " for: " << iFace << endl;
+
 		for (int i = 0; i < _next_player[p]->GetNumCards(); i++)
 		{
-			if (_next_player[p]->GetCard(i, *m_player_temp))
+			_next_player[p]->GetCard(i, m_temp_card2);
+			if (m_temp_card2.GetFace() == iFace)
 			{
-				if (m_player_temp->GetFace() == iFace)
-				{
-					
-					for (int j = 0; j < _current_player->GetNumCards(); j++)
-					{
-						_current_player->GetCard(j, *m_player_temp);
-						if (m_player_temp->GetFace() == iFace)
-						{
-							_next_player[p]->Discard(i, *m_player_temp);
-							_current_player->Discard(j, *m_player_temp);
-							_current_player->AddToScore(1);
-							return true;
-						}
-					}
-				}
+				_next_player[p]->Discard(i, m_temp_card2);
+				_current_player->AddCard(m_temp_card2);
+				return true;
 			}
 		}
 		return false;
@@ -347,25 +339,25 @@ bool Game::AskCard(Player* _current_player, Player** _next_player)
 		// Computer behavior
 		do
 		{
-			p = rand() % 4;
-		} while (p < 0 || p > 3 || _next_player[p] == _current_player);
+			p = rand() % m_numPlayers;
+		} while (p < 0 || p >= m_numPlayers || _next_player[p] == _current_player);
 		//jump out when player's is being asked hand is empty
 		if (0 == _next_player[p]->GetNumCards())
 			return false;
 
 		int iCount{ 0 };		
 		iCount = rand() % _current_player->GetNumCards();
-		_current_player->GetCard(iCount, *m_pair_discard1);
-		iFace = m_pair_discard1->GetFace();
+		_current_player->GetCard(iCount, m_temp_card1);
+		iFace = m_temp_card1.GetFace();
 		cout << _current_player->GetName() << " is asking " << _next_player[p]->GetName() << " for: " << iFace << endl;
 
 		for (int i = 0; i < _next_player[p]->GetNumCards(); i++)
 		{
-			_next_player[p]->GetCard(i, *m_pair_discard2);
-			if (m_pair_discard2->GetFace() == iFace)
+			_next_player[p]->GetCard(i, m_temp_card2);
+			if (m_temp_card2.GetFace() == iFace)
 			{
-				_next_player[p]->Discard(i, *m_pair_discard2);
-				_current_player->AddCard(*m_pair_discard2);
+				_next_player[p]->Discard(i, m_temp_card2);
+				_current_player->AddCard(m_temp_card2);
 				return true;
 			}
 		}

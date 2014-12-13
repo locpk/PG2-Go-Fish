@@ -31,12 +31,9 @@ class Game
 	int isComputer;
 	ifstream m_title_art;
 	const char* m_filename = "asc.txt";
-	Card m_deck_temp;
-	Card* m_player_temp;
-	Card* m_pair_check1;
-	Card* m_pair_check2;
-	Card* m_pair_discard1;
-	Card* m_pair_discard2;
+	Card m_temp_card1;
+	Card m_temp_card2;
+	ISoundEngine* engine;
 public:
 	// Default ctor
 	Game();
