@@ -23,6 +23,7 @@
 // Return:	We always return 0.
 int main(int, const char*[])
 {
+
 	// This will check for memory leaks.  They will show up in your
 	// output window along with the line number.  Replace the 
 	// -1 argument in the second call with the allocation number
@@ -62,5 +63,27 @@ int main(int, const char*[])
 	cout << "\n\n";
 	system("pause");
 	return 0;
+#if 0
+	// start the sound engine with default parameters
+	ISoundEngine* engine = createIrrKlangDevice();
+
+	if (!engine)
+		return 0; // error starting up the engine
+
+	// play some sound stream, looped
+	engine->play2D("TheForestAwakes.ogg", true);
+
+	char i = 0;
+
+	while (i != 'q')
+	{
+		std::cout << "Press any key to play some sound, press 'q' to quit.\n";
+
+		std::cin >> i; // wait for user to press some key
+	}
+
+	engine->drop(); // delete engine
+	return 0;
+#endif
 }
 

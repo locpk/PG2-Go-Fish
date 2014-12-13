@@ -39,7 +39,7 @@ public:
 	/* TODO Lab2:
 			Make the default values "Player" and 7
 	*/
-	Player(const char* _name = "Player", int _maxCards = 7);
+	Player(const char* _name = "Player", int _maxCards = 15);
 
 	/* TODO Lab4:
 			Prototype the copy constructor
@@ -88,7 +88,7 @@ public:
 	// Change the player's name to the value passed in
 	void SetName(const char* _name); 
 
-	inline bool SetIsPlaying(bool flag) { isPlaying = flag; }
+	inline void SetIsPlaying(bool flag) { isPlaying = flag; }
 	// Update the player's score by some amount
 	void AddToScore(int _add);
 

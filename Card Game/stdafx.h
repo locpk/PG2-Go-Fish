@@ -29,4 +29,7 @@ using namespace std;
 #include "Console.h"
 using namespace System;
 
+#include <irrKlang.h>
+using namespace irrklang;
+
 #include "TestController.h"

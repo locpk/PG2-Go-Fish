@@ -25,7 +25,7 @@ Player::Player(const char* _name, int _maxCards) : m_maxCards(_maxCards)
 
 	m_hand = new Card[_maxCards];
 
-	isPlaying = false;
+	isPlaying = true;
 	m_numCards = 0;
 	m_score = 0;
 }

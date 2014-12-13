@@ -29,7 +29,7 @@ void Human::Show() const
 	for (int i = 0; i < Player::GetNumCards(); i++)
 	{
 		Player::GetCard(i, tempCard);
-		cout << tempCard.GetFace() << tempCard.GetSuit() << "\t";
+		cout << tempCard << "\t";
 	}
 	cout << endl;
 	Console::ResetColor();

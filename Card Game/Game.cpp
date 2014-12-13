@@ -15,7 +15,6 @@ Game::Game()
 	m_currPlayer = 0;
 	m_numPlayers = 0;
 	isComputer = 0;
-	m_deck_temp = new Card;
 	m_player_temp = new Card;
 	m_pair_check1 = new Card;
 	m_pair_check2 = new Card;
@@ -32,8 +31,8 @@ Game::~Game()
 		delete m_players[i];
 		m_players[i] = nullptr;
 	}
-	delete m_deck_temp;
-	m_deck_temp = nullptr;
+	//delete m_deck_temp;
+	//m_deck_temp = nullptr;
 	delete m_player_temp;
 	m_player_temp = nullptr;
 	delete m_pair_check1;
@@ -82,6 +81,7 @@ void Game::Run()
 					cin.clear();
 					cin.sync();
 				}
+				
 				if (1 == isComputer)
 				{
 					m_players[i] = new Computer(Console::RandomName());
@@ -99,8 +99,8 @@ void Game::Run()
 				//draw 7 card for the player 
 				for (int j = 0; j < 7; j++)
 				{
-					m_Deck.Draw(*m_deck_temp);
-					m_players[i]->AddCard(*m_deck_temp);
+					m_Deck.Draw(m_deck_temp);
+					m_players[i]->AddCard(m_deck_temp);
 				}
 
 			}
@@ -132,6 +132,7 @@ void Game::Run()
 			cout << ">>      " << "Quit\n";
 			Console::SetCursorPosition(CURSORLEFT, STARTBUTTON);
 			MenuCursor();
+			Console::CursorVisible(false);
 			break;
 		case GAME_PLAY:
 			// Insert game play code here.
@@ -139,78 +140,96 @@ void Game::Run()
 			{
 				if (m_currPlayer == m_numPlayers) //reset players let them take turns
 					m_currPlayer = 0;
-
-				
-				Sleep(1500);
-				Console::Clear();
-
-				//show each player's hand
-				for (int i = 0; i < m_numPlayers; i++)
-				{
-					m_players[i]->Show();
-				}
-				// test if a player is run out of cards
-				if (0 == m_players[m_currPlayer]->GetNumCards())
-				{
-					for (size_t i = 0; i < 7; i++)
-					{
-						if(m_Deck.Draw(*m_deck_temp))
-							m_players[m_currPlayer]->AddCard(*m_deck_temp);
-					}
-				}
 				// dummy game over condition without allowing quiting game
-				if (m_Deck.IsEmpty() && 0 == m_players[0]->GetNumCards() && 0 == m_players[1]->GetNumCards() && 0 == m_players[2]->GetNumCards() && 0 == m_players[3]->GetNumCards()) 
+				if (m_Deck.IsEmpty() && 0 == m_players[0]->GetNumCards() && 0 == m_players[1]->GetNumCards() && 0 == m_players[2]->GetNumCards() && 0 == m_players[3]->GetNumCards())
 				{
 					SetState(GAME_END);
 					break;
 				}
+				if (m_players[m_currPlayer]->IsPlaying())
+				{
+					m_players[m_currPlayer]->SortCardsbySuit();
+					cin.get();
+					//Sleep(1500);
+					Console::Clear();
 
-				if (m_numPlayers - 1 == m_currPlayer) // if current player is the last player
-				{
+					//show each player's hand
+					for (int i = 0; i < m_numPlayers; i++)
+					{
+						m_players[i]->Show();
+					}
+					// test if a player is run out of cards
+					if (0 == m_players[m_currPlayer]->GetNumCards())
+					{
+						for (size_t i = 0; i < 7; i++)
+						{
+							if (m_Deck.Draw(m_deck_temp))
+								m_players[m_currPlayer]->AddCard(m_deck_temp);
+							else
+							{
+								m_players[m_currPlayer]->SetIsPlaying(false);
+								break;
+							}
+						}
+					}
+
 					while (AskCard(m_players[m_currPlayer], m_players)) // if ask card fails draw from deck
 					{
 						cout << "Ask successful! Keep asking." << endl;
 					}
-					if (m_Deck.Draw(*m_deck_temp))
+					if (m_Deck.Draw(m_deck_temp))
 					{
-						m_players[m_currPlayer]->AddCard(*m_deck_temp);
-						cout << endl << m_players[m_currPlayer]->GetName() << " draws from the deck." << endl;
+						m_players[m_currPlayer]->AddCard(m_deck_temp);
+						cout << endl << m_players[m_currPlayer]->GetName() << " draws from the deck. a " << m_deck_temp << endl;
 					}
-					
-				}
-				// if current player is the first player
-				else
-				{
-					while (AskCard(m_players[m_currPlayer], m_players)) // if ask card fails draw from deck
-					{
-						cout << "Ask successful! Keep asking." << endl;
-					}
-					if (m_Deck.Draw(*m_deck_temp))
-					{
-						m_players[m_currPlayer]->AddCard(*m_deck_temp);
-						cout << endl << m_players[m_currPlayer]->GetName() << " draws from the deck." << endl;
-					}
-					
-				}
-				Score(m_players[m_currPlayer]); // check pairs
-				
+					Score(m_players[m_currPlayer]); // check pairs 
+				}	
 			}
-			Console::BackgroundColor(Blue);
-			cout << "Game ENDs!" << endl;
-			for (int i = 0; i < m_numPlayers; i++)
-			{
-				cout << m_players[i]->GetName() << "'s FINAL SCORE is: ";
-				cout << m_players[i]->GetScore() << endl;
-			}
-			Console::ResetColor();
-			Sleep(6000);
 			SetState(GAME_END);
 			break;
 		case GAME_END:
 			// The game is over, change the bool to stop the loop.
-			bRun = false;
+			Console::BackgroundColor(Blue);
 			Console::Clear();
-			cout << "Bye Bye!" << endl;
+			Console::SetCursorPosition(Console::WindowWidth() / 3, Console::WindowHeight() / 3);
+			
+			cout << "Game ENDs!" << endl;
+			Sleep(1500);
+			int iWinner{ 0 }, iMaxScore{0};
+			for (int i = 0; i < m_numPlayers; i++)
+			{
+				if (m_players[i]->GetScore() > iMaxScore)
+				{
+					iMaxScore = m_players[i]->GetScore();
+					iWinner = i;
+				}
+				Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 3);
+				std::string str1 = m_players[i]->GetName();
+				std::string str2 = "'s FINAL SCORE is: ";
+				std::string str3 = std::to_string(m_players[i]->GetScore());
+				std::string str = str1 + str2 + str3;
+				for (char& c : str) {
+					cout << c;
+					Sleep(60);
+				}
+				Sleep(1500);
+				Console::Clear();
+				
+			}
+			Console::ForegroundColor(Red);
+			Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 3);
+			cout << "The Winner is : " << m_players[iWinner]->GetName() << " , scored " << m_players[iWinner]->GetScore() << endl;
+			Sleep(6000);
+			bRun = false;
+			Console::ResetColor();
+			Console::Clear();
+			Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 3);
+			std::string str = "Bye Bye!";
+			for (char& c : str) {
+				cout << c;
+				Sleep(150);
+			}
+			Console::CursorVisible(true);
 			break;
 		}
 	}
@@ -247,7 +266,6 @@ int Game::Score(Player* _player)
 		_player->GetCard(i, *m_pair_check1);
 		for (int j = i + 1; j < _player->GetNumCards(); j++)
 		{
-			
 			_player->GetCard(j, *m_pair_check2);
 			if (m_pair_check1->GetFace() == m_pair_check2->GetFace())
 			{
@@ -260,7 +278,6 @@ int Game::Score(Player* _player)
 			}
 		}
 	}
-	_player->SortCardsbySuit();
 	return iPairs;
 }
 
@@ -338,28 +355,18 @@ bool Game::AskCard(Player* _current_player, Player** _next_player)
 
 		int iCount{ 0 };		
 		iCount = rand() % _current_player->GetNumCards();
-		_current_player->GetCard(iCount, *m_player_temp);
-		iFace = m_player_temp->GetFace();
+		_current_player->GetCard(iCount, *m_pair_discard1);
+		iFace = m_pair_discard1->GetFace();
 		cout << _current_player->GetName() << " is asking " << _next_player[p]->GetName() << " for: " << iFace << endl;
 
 		for (int i = 0; i < _next_player[p]->GetNumCards(); i++)
 		{
-			if (_next_player[p]->GetCard(i, *m_player_temp))
+			_next_player[p]->GetCard(i, *m_pair_discard2);
+			if (m_pair_discard2->GetFace() == iFace)
 			{
-				if (m_player_temp->GetFace() == iFace)
-				{
-					for (int j = 0; j < _current_player->GetNumCards(); j++)
-					{
-						_current_player->GetCard(j, *m_player_temp);
-						if (m_player_temp->GetFace() == iFace)
-						{
-							_next_player[p]->Discard(i, *m_player_temp);
-							_current_player->Discard(j, *m_player_temp);
-							_current_player->AddToScore(1);
-							return true;
-						}
-					}
-				}
+				_next_player[p]->Discard(i, *m_pair_discard2);
+				_current_player->AddCard(*m_pair_discard2);
+				return true;
 			}
 		}
 		return false;

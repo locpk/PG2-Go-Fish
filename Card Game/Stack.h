@@ -54,6 +54,9 @@ public:
 
 	// Clear out the stack for re-use
 	void Clear();
+private:
+	Stack(const Stack& q) { }
+	Stack& operator=(const Stack& q) { return *this; }
 };
 
 
