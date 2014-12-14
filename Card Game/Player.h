@@ -39,7 +39,7 @@ public:
 	/* TODO Lab2:
 			Make the default values "Player" and 7
 	*/
-	Player(const char* _name = "Player", int _maxCards = 15);
+	Player(const char* _name = "Player", int _maxCards = 20);
 
 	/* TODO Lab4:
 			Prototype the copy constructor

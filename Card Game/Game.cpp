@@ -3,7 +3,7 @@
 #define CURSORLEFT Console::WindowWidth() /2 -5
 #define STARTBUTTON 13
 #define QUITBUTTON 14
-
+#define QUICK_TEST 1
 // Default ctor
 Game::Game() : m_filename("asc.txt")
 {
@@ -53,6 +53,7 @@ void Game::Run()
 			{
 				for (;;)
 				{
+					Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 4);
 					cout << "How many players? (2 - 4)";
 					if (cin >> m_numPlayers)
 					{
@@ -69,10 +70,14 @@ void Game::Run()
 			{
 				for (;;)
 				{
+					Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 4);
+					Console::ForegroundColor(rand() % 15 + 1);
 					cout << "Player " << i + 1 << " is computer? (0 for NO, 1 for YES)";
 					if (cin >> isComputer && (isComputer == 0 || isComputer == 1))
 					{
 						cin.sync();
+						Console::Clear();
+						Console::ResetColor();
 						break;
 					}
 					cin.clear();
@@ -84,7 +89,12 @@ void Game::Run()
 				}
 				else
 				{
-					m_players[i] = new Human;
+					char PlayerName[21];
+					PlayerName[20] = '\0';
+					Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 4);
+					cout << " What's your name?";
+					cin.get(PlayerName, 20, '\n');
+					m_players[i] = new Human(PlayerName);
 				}
 
 			}
@@ -101,19 +111,44 @@ void Game::Run()
 
 			}
 			Console::Clear();
-			Console::SetCursorPosition(Console::WindowWidth() /4 ,Console::WindowHeight()/2);
-			cout << ">_<...I'm "<< "Loading...I wish I am a Quantum computer.";
-			Sleep(1500);
+			Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 2);
+			m_line = ">_<...I'm Loading...I wish I am a Quantum computer.";
+			for (char& c : m_line) {
+				cout << c;
+				Sleep(60);
+			}
+			Console::ResetColor();
+			Sleep(1000);
 			SetState(GAME_PLAY);
 			break;
 		case GAME_MENU:
 			// Insert menu code here.
+			
 			Console::FlushKeys();
-
+			//play BGM and it will loop
 			engine->play2D("TheForestAwakes.ogg", true);
 
 			Console::Clear();
-			cout << getFileContents(m_title_art);
+			//show title art
+			if (m_title_art)
+			{
+				while (m_title_art.good())
+				{
+					std::string TempLine;
+					std::getline(m_title_art, TempLine);
+					TempLine += "\n";
+					Console::ForegroundColor(rand() % 15 + 1);
+					cout << TempLine;
+				}
+			}
+			else
+			{
+				Console::Clear();
+				Console::SetCursorPosition(Console::WindowWidth() / 3, Console::WindowHeight() / 2);
+				cout << "Title Art File does not exist.";
+			}
+
+			Console::ResetColor();
 			/*_¦¦¦¦¦¦_   _¦¦¦¦¦¦_          _¦¦¦¦¦¦¦¦  _¦     _¦¦¦¦¦¦¦¦    _¦    ¦_
 				¦¦¦    ¦¦¦ ¦¦¦    ¦¦¦        ¦¦¦    ¦¦¦ ¦¦¦    ¦¦¦    ¦¦¦   ¦¦¦    ¦¦¦
 				¦¦¦    ¦¯  ¦¦¦    ¦¦¦        ¦¦¦    ¦¯  ¦¦¦¦   ¦¦¦    ¦¯    ¦¦¦    ¦¦¦
@@ -122,14 +157,14 @@ void Game::Run()
 				¦¦¦    ¦¦¦ ¦¦¦    ¦¦¦        ¦¦¦        ¦¦¦           ¦¦¦   ¦¦¦    ¦¦¦
 				¦¦¦    ¦¦¦ ¦¦¦    ¦¦¦        ¦¦¦        ¦¦¦     _¦    ¦¦¦   ¦¦¦    ¦¦¦
 				¦¦¦¦¦¦¦¦¯   ¯¦¦¦¦¦¦¯         ¦¦¦        ¦¯    _¦¦¦¦¦¦¦¦¯    ¦¦¦    ¦¯*/
-			
+
 			Console::SetCursorPosition(CURSORLEFT, STARTBUTTON);
 			cout << ">>      " << "Start\n";
 			Console::SetCursorPosition(CURSORLEFT, QUITBUTTON);
 			cout << ">>      " << "Quit\n";
 			Console::SetCursorPosition(CURSORLEFT, STARTBUTTON);
 			MenuCursor();
-			engine->drop(); // delete engine
+			engine->drop(); // stop the music
 			Console::FlushKeys();
 			break;
 		case GAME_PLAY:
@@ -158,8 +193,13 @@ void Game::Run()
 				{
 					m_players[m_currPlayer]->SortCardsbySuit();
 					//uncomment next and hold return key to quick run through a AI vs AI game
-					//cin.get();
+
+#if QUICK_TEST
+					cout << "Press return to run." << endl;
+					cin.get();
+#else
 					Sleep(1500);
+#endif
 					Console::Clear();
 
 					//show each player's hand
@@ -184,7 +224,7 @@ void Game::Run()
 
 					while (AskCard(m_players[m_currPlayer], m_players)) // if ask card fails draw from deck
 					{
-						cout << "Ask successful! Keep asking." << endl;
+						cout << endl << "Ask successful! Keep asking." << endl;
 					}
 					if (m_Deck.Draw(m_temp_card1))
 					{
@@ -196,7 +236,7 @@ void Game::Run()
 			}
 			SetState(GAME_END);
 			//Match result
-			
+
 			Console::Clear();
 			Console::SetCursorPosition(Console::WindowWidth() / 3, Console::WindowHeight() / 3);
 			cout << "Game ENDs!" << endl;
@@ -235,38 +275,18 @@ void Game::Run()
 			Console::ResetColor();
 			Console::Clear();
 			Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 3);
+			Console::ForegroundColor(rand() % 15 + 1);
 			std::string str = "Bye Bye!";
 			for (char& c : str) {
 				cout << c;
 				Sleep(150);
 			}
-			Console::CursorVisible(true);
 			break;
 		}
 	}
 }
 
-std::string Game::getFileContents(std::ifstream& File)
-{
-	std::string Lines = "";        //All lines
 
-	if (File)                      //Check if everything is good
-	{
-		while (File.good())
-		{
-			std::string TempLine;                  //Temp line
-			std::getline(File, TempLine);        //Get temp line
-			TempLine += "\n";                      //Add newline character
-
-			Lines += TempLine;                     //Add newline
-		}
-		return Lines;
-	}
-	else                           //Return error
-	{
-		return "Menu Art File does not exist.";
-	}
-}
 
 int Game::Score(Player* _player)
 {
@@ -323,21 +343,19 @@ bool Game::AskCard(Player* _current_player, Player** _next_player)
 		{
 			cin.clear();
 			cin.sync();
-			cout << "Choose a player to ask for  _\b";
 			for (int i = 0; i < m_numPlayers; i++)
 			{
 				cout << endl;
 				if (m_players[i] != _current_player)
-					cout << i << ") "<< m_players[i]->GetName() << endl;
+					cout << i << ") " << m_players[i]->GetName() << endl;
 			}
+			cout << "Choose a player to ask for  _\b";
 		} while (!(cin >> p) || (p < 0 || p >= m_numPlayers || _next_player[p] == _current_player));
 
 		//jump out when player's is being asked hand is empty
 		if (0 == _next_player[p]->GetNumCards())
 			return false;
-
 		cout << _current_player->GetName() << " is asking " << _next_player[p]->GetName() << " for: " << iFace << endl;
-
 		for (int i = 0; i < _next_player[p]->GetNumCards(); i++)
 		{
 			_next_player[p]->GetCard(i, m_temp_card2);
@@ -356,7 +374,7 @@ bool Game::AskCard(Player* _current_player, Player** _next_player)
 		do
 		{
 			p = rand() % m_numPlayers;
-		} while (p < 0 || p >= m_numPlayers || _next_player[p] == _current_player);
+		} while (p < 0 || p >= m_numPlayers || _next_player[p] == _current_player || false == _next_player[p]->IsPlaying());
 		//jump out when player's is being asked hand is empty
 		if (0 == _next_player[p]->GetNumCards())
 			return false;

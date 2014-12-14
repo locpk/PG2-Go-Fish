@@ -36,6 +36,7 @@ class Game
 	ISoundEngine* engine;
 	int m_Winner;
 	int m_MaxScore;
+	std::string m_line;
 public:
 	// Default ctor
 	Game();
@@ -55,5 +56,4 @@ public:
 	 int Score(Player* _player);
 	 bool AskCard(Player* _current_player, Player** _next_player);
 	 void MenuCursor();
-	 std::string getFileContents(std::ifstream&);
 };

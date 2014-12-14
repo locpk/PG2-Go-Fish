@@ -51,16 +51,16 @@ void Deck::Shuffle()
 	m_Stack.Clear();
 
 	Card temp;
-	//int index;
-	//for (size_t i = 0; i < 52; i++)
-	//{
-	//	do
-	//	{
-	//		index = rand() / (RAND_MAX / 52 );
-	//	} while (index >= 52);
-	//	//swap 
-	//	swap(m_cards[i], m_cards[index]);
-	//}
+	int index;
+	for (size_t i = 0; i < 52; i++)
+	{
+		do
+		{
+			index = rand() / (RAND_MAX / 52 );
+		} while (index >= 52);
+		//swap 
+		swap(m_cards[i], m_cards[index]);
+	}
 	for (size_t i = 0; i < 52; i++)
 	{
 		m_Stack.Push(m_cards[i]);

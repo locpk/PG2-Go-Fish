@@ -15,6 +15,15 @@
     <Filter Include="Unit Test Files\Unit Test++">
       <UniqueIdentifier>{a16cdbee-45ca-4791-8633-9564399bbdb6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Music">
+      <UniqueIdentifier>{f6b7f528-b9e7-4e68-b7ff-f469db456d6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Title Art">
+      <UniqueIdentifier>{8dbf9986-dd5a-42c5-b0c7-0a5833d56aad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Music engine runtime library">
+      <UniqueIdentifier>{0812886e-7590-408d-8b76-1a8b8f57dc3a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Card.h">
@@ -218,15 +227,18 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="asc.txt">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Title Art</Filter>
     </Text>
     <Text Include="asc2.txt">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Title Art</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="irrKlang.dll">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Music engine runtime library</Filter>
+    </None>
+    <None Include="TheForestAwakes.ogg">
+      <Filter>Source Files\Music</Filter>
     </None>
   </ItemGroup>
 </Project>

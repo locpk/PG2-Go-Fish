@@ -74,3 +74,10 @@ $RECYCLE.BIN/
 
 # Log
 *.tlog
+
+# Debug folder
+Debug
+*.tlog
+*.idb
+*.pdb
+*.log

@@ -24,16 +24,19 @@ void Human::Show() const
 
 	*/
 	Console::ForegroundColor(Cyan);
-	cout << endl << Player::GetName() << "'s Current score is:" << Player::GetScore() << endl;
+	cout << endl << "\t" << Player::GetName() << "'s Current score is:" << Player::GetScore() << endl;
 	Card tempCard;
 	int currentheight = Console::CursorTop();
 	for (int i = 0; i < Player::GetNumCards(); i++)
 	{
+		Console::BackgroundColor(White);
 		Player::GetCard(i, tempCard);
 		std::wcout.imbue(std::locale(".OCP"));
 		wchar_t const *DoubleLine = L"╔═╗║╚╝";
-
-		Console::ForegroundColor(Blue);
+		if (5 == tempCard.GetSuit() || 6 == tempCard.GetSuit())
+			Console::ForegroundColor(Red);
+		else
+			Console::ForegroundColor(Black);
 		switch (tempCard.GetFace())
 		{
 		case 10:
@@ -86,6 +89,6 @@ void Human::Show() const
 		cout << " ";
 		Console::SetCursorPosition(Console::CursorLeft(), currentheight);
 	}
-	cout << "\n\n\n";
+	cout << "\n\n\n\n";
 	Console::ResetColor();
 }
