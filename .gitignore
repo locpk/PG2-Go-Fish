@@ -81,3 +81,8 @@ Debug
 *.idb
 *.pdb
 *.log
+*.pdb
+*.pdb
+*.idb
+*.tlog
+*.log
