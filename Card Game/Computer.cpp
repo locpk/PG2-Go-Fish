@@ -13,7 +13,7 @@ Computer::Computer(const char* _name)
 }
 
 // Display the computer's name and card backs
-void Computer::Show() const
+void Computer::Show(bool is_current) const
 {
 	/* TODO Lab2:
 			Implement this method.

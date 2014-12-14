@@ -18,7 +18,7 @@ public:
 	Human(const char* _name = "Human");
 
 	// Display the computer's name and card backs
-	void Show() const;
+	void Show(bool is_current) const;
 
 	// Needed for unit tests
 	// DO NOT REMOVE

@@ -28,6 +28,9 @@ Player::Player(const char* _name, int _maxCards) : m_maxCards(_maxCards)
 	isPlaying = true;
 	m_numCards = 0;
 	m_score = 0;
+	m_cheat1 = false;
+	m_cheat2 = false;
+	m_cheat3 = false;
 }
 
 /* TODO Lab4:
@@ -53,6 +56,9 @@ Player::Player(const Player& _obj) : m_maxCards(_obj.m_maxCards)
 	m_numCards = _obj.m_numCards;
 	m_score = _obj.m_score;
 	isPlaying = _obj.isPlaying;
+	m_cheat1 = _obj.m_cheat1;
+	m_cheat2 = _obj.m_cheat2;
+	m_cheat3 = _obj.m_cheat3;
 }
 
 
@@ -99,6 +105,9 @@ Player& Player::operator =(const Player& _obj)
 		m_numCards = _obj.m_numCards;
 		m_score = _obj.m_score;
 		isPlaying = _obj.isPlaying;
+		m_cheat1 = _obj.m_cheat1;
+		m_cheat2 = _obj.m_cheat2;
+		m_cheat3 = _obj.m_cheat3;
 	}
 	return *this;
 }
@@ -234,7 +243,7 @@ void Player::Clear()
 }
 
 // Display method (empty for this class)
-void Player::Show() const
+void Player::Show(bool is_current) const
 {
 
 }

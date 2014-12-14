@@ -30,8 +30,12 @@ private:
 	const int m_maxCards;				// The number of cards the player can store (the number of elements in Hand)
 	int m_score;				// For "Go Fish," this will represent the number of pairs.  For "UNO," it will be the player's accumulated score
 	bool isPlaying;
+	
+	bool m_cheat1;
+	bool m_cheat2;
+	bool m_cheat3;
 public:
-
+	static unsigned char m_bytes;
 	// Default ctor
 	// In:	_name			The player's name
 	//		_maxCards		The maximum number of cards they can store
@@ -72,6 +76,7 @@ public:
 	inline int GetNumCards() const { return m_numCards; }
 	inline int GetMaxCards() const { return m_maxCards; }
 	inline int GetScore() const { return m_score; }
+	inline unsigned char GetCheats() const { return m_bytes; }
 
 	// Do not inline this next method
 	
@@ -89,6 +94,7 @@ public:
 	void SetName(const char* _name); 
 
 	inline void SetIsPlaying(bool flag) { isPlaying = flag; }
+	inline void SetCheats(unsigned int in)  { m_bytes ^= 1 << (in - 1); }
 	// Update the player's score by some amount
 	void AddToScore(int _add);
 
@@ -116,10 +122,11 @@ public:
 	bool SortCardsbySuit();
 	bool SortCardsbyNum();
 
+
 	/* TODO Lab2:
 			Allow this method to be overridden in child classes.
 	*/
-	virtual	void Show() const = 0;
+	virtual	void Show(bool is_current) const = 0;
 	
 	// Needed for unit tests
 	// DO NOT REMOVE

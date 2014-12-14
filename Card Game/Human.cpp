@@ -12,7 +12,7 @@ Human::Human(const char* _name)
 }
 
 // Display the computer's name and card backs
-void Human::Show() const
+void Human::Show(bool is_current) const
 {
 	/* TODO Lab2:
 	Implement this method.
@@ -37,53 +37,65 @@ void Human::Show() const
 			Console::ForegroundColor(Red);
 		else
 			Console::ForegroundColor(Black);
-		switch (tempCard.GetFace())
+		if (is_current)
 		{
-		case 10:
-			cout << setw(2) << tempCard.GetFace();
-			break;
-		case 11:
-			cout << 'J';
-			break;
-		case 12:
-			cout << 'Q';
-			break;
-		case 13:
-			cout << 'K';
-			break;
-		case 14:
-			cout << 'A';
-			break;
-		default:
-			cout << tempCard.GetFace();
-			break;
+			switch (tempCard.GetFace())
+			{
+			case 10:
+				cout << setw(2) << tempCard.GetFace();
+				break;
+			case 11:
+				cout << 'J';
+				break;
+			case 12:
+				cout << 'Q';
+				break;
+			case 13:
+				cout << 'K';
+				break;
+			case 14:
+				cout << 'A';
+				break;
+			default:
+				cout << tempCard.GetFace();
+				break;
+			}
+		}
+		else
+		{
+			cout << '?';
 		}
 		wcout << DoubleLine[1] << DoubleLine[1] << DoubleLine[1] << DoubleLine[2];
 		Console::SetCursorPosition(Console::CursorLeft() - 5, Console::CursorTop() + 1);
 		wcout << DoubleLine[3];
-		//uncomment next line to display computer's cards
 		cout << " " << tempCard.GetSuit() << " ";
-		//cout <<"XXX";
 		wcout << DoubleLine[3];
 		Console::SetCursorPosition(Console::CursorLeft() - 5, Console::CursorTop() + 1);
 		wcout << DoubleLine[4] << DoubleLine[1] << DoubleLine[1] << DoubleLine[1];
-		switch (tempCard.GetFace())
+		if (is_current)
 		{
-		case 11:
-			cout << 'J';
-			break;
-		case 12:
-			cout << 'Q';
-			break;
-		case 13:
-			cout << 'K';
-			break;
-		case 14:
-			cout << 'A';
-			break;
-		default:
-			cout << tempCard.GetFace();
-			break;
+			switch (tempCard.GetFace())
+			{
+			case 11:
+				cout << 'J';
+				break;
+			case 12:
+				cout << 'Q';
+				break;
+			case 13:
+				cout << 'K';
+				break;
+			case 14:
+				cout << 'A';
+				break;
+			default:
+				cout << tempCard.GetFace();
+				break;
+			}
+		}
+		else
+		{
+			cout << '?';
 		}
 		Console::ResetColor();
 		cout << " ";

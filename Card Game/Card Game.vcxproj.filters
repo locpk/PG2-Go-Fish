@@ -24,6 +24,9 @@
     <Filter Include="Source Files\Music engine runtime library">
       <UniqueIdentifier>{0812886e-7590-408d-8b76-1a8b8f57dc3a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\HighScore">
+      <UniqueIdentifier>{44e5853e-cc9d-4ad8-b37f-5d76c7a39ee1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Card.h">
@@ -231,6 +234,9 @@
     </Text>
     <Text Include="asc2.txt">
       <Filter>Source Files\Title Art</Filter>
+    </Text>
+    <Text Include="High Score.txt">
+      <Filter>Source Files\HighScore</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

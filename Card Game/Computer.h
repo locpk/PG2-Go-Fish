@@ -17,7 +17,7 @@ public:
 	Computer(const char* _name = "Computer");
 
 	// Display the computer's name and card backs
-	void Show() const;
+	void Show(bool is_current) const;
 	
 	// Needed for unit tests
 	// DO NOT REMOVE

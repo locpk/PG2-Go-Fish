@@ -2,8 +2,9 @@
 //define menu layout positions
 #define CURSORLEFT Console::WindowWidth() /2 -5
 #define STARTBUTTON 13
-#define QUITBUTTON 14
-#define QUICK_TEST FALSE
+#define CHEATBUTTON 14
+#define QUITBUTTON 15
+#define QUICK_TEST TRUE
 // Default ctor
 Game::Game() : m_filename("asc.txt")
 {
@@ -160,6 +161,8 @@ void Game::Run()
 
 			Console::SetCursorPosition(CURSORLEFT, STARTBUTTON);
 			cout << ">>      " << "Start\n";
+			Console::SetCursorPosition(CURSORLEFT, CHEATBUTTON);
+			cout << ">>      " << "Cheats ;)\n";
 			Console::SetCursorPosition(CURSORLEFT, QUITBUTTON);
 			cout << ">>      " << "Quit\n";
 			Console::SetCursorPosition(CURSORLEFT, STARTBUTTON);
@@ -205,7 +208,10 @@ void Game::Run()
 					//show each player's hand
 					for (int i = 0; i < m_numPlayers; i++)
 					{
-						m_players[i]->Show();
+						if (i == m_currPlayer)
+							m_players[i]->Show(true);
+						else
+							m_players[i]->Show(false);
 					}
 					// test if a player is run out of cards
 					if (0 == m_players[m_currPlayer]->GetNumCards())
@@ -266,6 +272,16 @@ void Game::Run()
 			Console::ForegroundColor(Red);
 			Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 3);
 			cout << "The Winner is : " << m_players[m_Winner]->GetName() << " , scored " << m_players[m_Winner]->GetScore() << endl;
+
+			//read old leaderboard
+			strcpy_s(Winner.m_name, strlen(m_players[m_Winner]->GetName()) + 1, m_players[m_Winner]->GetName());
+			Winner.m_score = m_players[m_Winner]->GetScore();
+			Read(m_TempLB);
+			//add new winner
+			m_TempLB.push_back(Winner);
+			std::sort(m_TempLB.begin(), m_TempLB.end(), Winner);
+			//write a new leaderboard
+			Write(m_TempLB);
 			Sleep(6000);
 			break;
 		case GAME_END:
@@ -429,6 +445,10 @@ void Game::MenuCursor()
 		{
 			if (Console::CursorTop() == QUITBUTTON)
 			{
+				Console::SetCursorPosition(CURSORLEFT, CHEATBUTTON);
+			}
+			else if (Console::CursorTop() == CHEATBUTTON)
+			{
 				Console::SetCursorPosition(CURSORLEFT, STARTBUTTON);
 			}
 			else
@@ -439,6 +459,10 @@ void Game::MenuCursor()
 		else if (GetAsyncKeyState(VK_DOWN))
 		{
 			if (Console::CursorTop() == STARTBUTTON)
+			{
+				Console::SetCursorPosition(CURSORLEFT, CHEATBUTTON);
+			}
+			else if (Console::CursorTop() == CHEATBUTTON)
 			{
 				Console::SetCursorPosition(CURSORLEFT, QUITBUTTON);
 			}
@@ -454,6 +478,10 @@ void Game::MenuCursor()
 				SetState(GAME_END);
 				break;
 			}
+			else if (CHEATBUTTON == Console::CursorTop())
+			{
+
+			}
 			else
 			{
 				Console::Clear();
@@ -464,3 +492,53 @@ void Game::MenuCursor()
 	}
 }
 
+void Game::CheatMenu(Player* _current_player, Player** _next_player)
+{
+
+}
+
+void Game::Read(std::vector<Leaderboard>& _in)
+{
+	std::ifstream fin;
+	fin.open("High Score.txt");
+	if (fin.is_open())
+	{
+		Leaderboard temp;
+			for (;;)
+			{
+				if (fin.peek() == '\n')
+					break;
+				if (fin.eof())
+					break;
+				fin.get(temp.m_name, sizeof temp.m_name, '\t');
+				fin >> temp.m_score;
+				fin.ignore(LLONG_MAX, '\n');
+				_in.push_back(temp);
+			}
+		fin.close();
+	}
+	else
+	{
+		std::cout << "Can't read the 'High Score.txt' file.\n";
+	}
+}
+
+void Game::Write(std::vector<Leaderboard>& _in)
+{
+	std::ofstream fout("High Score.txt");
+	if (fout.is_open())
+	{
+		for (size_t i = 0; fout.good() && i < _in.size(); i++)
+		{
+			fout << _in[i].m_name << '\t' << _in[i].m_score << '\n';
+		}
+		if (!fout.good())
+			std::cerr << "Problem writing name and score!\n";
+
+		fout.close();
+	}
+	else
+	{
+		std::clog << "Couldn't open 'High Score.txt' for writing!\n";
+	}
+}
