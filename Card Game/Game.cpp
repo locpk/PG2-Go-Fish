@@ -3,7 +3,7 @@
 #define CURSORLEFT Console::WindowWidth() /2 -5
 #define STARTBUTTON 13
 #define QUITBUTTON 14
-#define QUICK_TEST 1
+#define QUICK_TEST FALSE
 // Default ctor
 Game::Game() : m_filename("asc.txt")
 {
@@ -374,7 +374,7 @@ bool Game::AskCard(Player* _current_player, Player** _next_player)
 		do
 		{
 			p = rand() % m_numPlayers;
-		} while (p < 0 || p >= m_numPlayers || _next_player[p] == _current_player || false == _next_player[p]->IsPlaying());
+		} while (p < 0 || p >= m_numPlayers || _next_player[p] == _current_player);
 		//jump out when player's is being asked hand is empty
 		if (0 == _next_player[p]->GetNumCards())
 			return false;
