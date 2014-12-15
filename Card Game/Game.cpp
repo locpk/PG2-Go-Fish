@@ -1,9 +1,9 @@
 ﻿#include "Game.h"
 //define menu layout positions
 #define CURSORLEFT Console::WindowWidth() /2 -5
-#define STARTBUTTON 13
-#define CHEATBUTTON 14
-#define QUITBUTTON 15
+#define STARTBUTTON 16
+#define CHEATBUTTON 17
+#define QUITBUTTON 18
 #define QUICK_TEST TRUE
 // Default ctor
 Game::Game() : m_filename("asc.txt")
@@ -72,7 +72,7 @@ void Game::Run()
 				for (;;)
 				{
 					Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 4);
-					Console::ForegroundColor(rand() % 15 + 1);
+					Console::ForegroundColor(rand() % (15 - 7 - 1) + 7);
 					cout << "Player " << i + 1 << " is computer? (0 for NO, 1 for YES)";
 					if (cin >> isComputer && (isComputer == 0 || isComputer == 1))
 					{
@@ -111,6 +111,7 @@ void Game::Run()
 				}
 
 			}
+			Console::FlushKeys();
 			Console::Clear();
 			Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 2);
 			m_line = ">_<...I'm Loading...I wish I am a Quantum computer.";
@@ -119,6 +120,25 @@ void Game::Run()
 				Sleep(60);
 			}
 			Console::ResetColor();
+			Console::Clear();
+			Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 2);
+			Console::ForegroundColor(Cyan);
+			cout << "Wanna cheat? (Lctrl + Return)";
+			Console::ResetColor();
+			for (;;)
+			{
+				
+				if (GetKeyState(VK_LCONTROL) && GetKeyState(VK_RETURN))
+				{
+					Console::FlushKeys();
+					CheatMenu();
+					break;
+				}
+				else if (GetKeyState(VK_RETURN))
+				{
+					break;
+				}
+			}
 			Sleep(1000);
 			SetState(GAME_PLAY);
 			break;
@@ -159,6 +179,7 @@ void Game::Run()
 				¦¦¦    ¦¦¦ ¦¦¦    ¦¦¦        ¦¦¦        ¦¦¦     _¦    ¦¦¦   ¦¦¦    ¦¦¦
 				¦¦¦¦¦¦¦¦¯   ¯¦¦¦¦¦¦¯         ¦¦¦        ¦¯    _¦¦¦¦¦¦¦¦¯    ¦¦¦    ¦¯*/
 
+			
 			Console::SetCursorPosition(CURSORLEFT, STARTBUTTON);
 			cout << ">>      " << "Start\n";
 			Console::SetCursorPosition(CURSORLEFT, CHEATBUTTON);
@@ -339,21 +360,34 @@ bool Game::AskCard(Player* _current_player, Player** _next_player)
 	if (NULL == dynamic_cast<Computer*>(_current_player))
 	{
 		//Human player behavior
-		cout << _current_player->GetName() << " What do you want? _\b";
 		//check if the card the player asking for is in its hand or not
-		while (!(cin >> iFace) || iFace > 14 || iFace < 0)
+		bool inHand = false;
+		cout << _current_player->GetName() << " What do you want? _\b";
+		for (; ;)
 		{
-			bool inHand = false;
+			cin >> iFace;
 			for (int i = 0; i < _current_player->GetNumCards(); i++)
 			{
 				_current_player->GetCard(i, m_temp_card2);
 				if (iFace == m_temp_card2.GetFace())
+				{
 					inHand = true;
+					cin.clear();
+					cin.sync();
+				}
 			}
-			cout << "invalid input";
-			cin.clear();
-			cin.sync();
+			if (inHand)
+			{
+				cin.clear();
+				cin.sync();
+				break;
+			}
+			else
+			{
+				cout <<"Sorry! "<< _current_player->GetName() << " You don't have that card in hand! _\b";
+			}
 		}
+		
 		// validation for choice of player index
 		do
 		{
@@ -492,9 +526,10 @@ void Game::MenuCursor()
 	}
 }
 
-void Game::CheatMenu(Player* _current_player, Player** _next_player)
+void Game::CheatMenu()
 {
-
+	
+	cout << "You are in cheat menu";
 }
 
 void Game::Read(std::vector<Leaderboard>& _in)
