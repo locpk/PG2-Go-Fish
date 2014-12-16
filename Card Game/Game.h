@@ -64,6 +64,8 @@ public:
 	 bool AskCard(Player* _current_player, Player** _next_player);
 	 void MenuCursor();
 	 void CheatMenu();
-	 void Game::Read(std::vector<Leaderboard>& _in);
-	 void Game::Write(std::vector<Leaderboard>& _in);
+	 void Read(std::vector<Leaderboard>& _in);
+	 void Write(std::vector<Leaderboard>& _in);
+	 GAMESTATE Replay();
+	 void Intro();
 };

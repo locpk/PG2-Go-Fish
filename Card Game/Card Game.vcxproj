@@ -155,6 +155,7 @@
     <Text Include="asc.txt" />
     <Text Include="asc2.txt" />
     <Text Include="High Score.txt" />
+    <Text Include="Intro.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="irrKlang.dll" />

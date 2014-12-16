@@ -27,6 +27,9 @@
     <Filter Include="Source Files\HighScore">
       <UniqueIdentifier>{44e5853e-cc9d-4ad8-b37f-5d76c7a39ee1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Intro">
+      <UniqueIdentifier>{b794fe48-c965-41ed-946a-eecdcf2fa8d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Card.h">
@@ -237,6 +240,9 @@
     </Text>
     <Text Include="High Score.txt">
       <Filter>Source Files\HighScore</Filter>
+    </Text>
+    <Text Include="Intro.txt">
+      <Filter>Source Files\Intro</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

@@ -3,7 +3,6 @@
 
 bool SortBySuit(Card const & L, Card const &  R) { return L.GetSuit() < R.GetSuit(); }
 bool SortByFace(Card const & L, Card const &  R) { return L < R; }
-
 /* TODO Lab5:
 		Initialize m_maxCards in all constructors
 */
@@ -31,6 +30,7 @@ Player::Player(const char* _name, int _maxCards) : m_maxCards(_maxCards)
 	m_cheat1 = false;
 	m_cheat2 = false;
 	m_cheat3 = false;
+	m_bytes = 0;
 }
 
 /* TODO Lab4:
@@ -240,6 +240,7 @@ void Player::Clear()
 			Implement this method.
 	*/
 	m_numCards = 0;
+	m_score = 0;
 }
 
 // Display method (empty for this class)
@@ -275,4 +276,45 @@ bool Player::SortCardsbyNum()
 		return false;
 	sort(m_hand, m_hand + m_numCards, SortByFace);
 	return true;
+}
+
+void Player::SetCheats(unsigned int in)  
+{ 
+	m_bytes ^= 1 << (in - 1); 
+	//close cheat1
+	switch (in)
+	{
+	case 1:
+		if (Player::m_bytes & 1)
+		{
+			m_cheat1 = true;
+		}
+		else
+		{
+			m_cheat1 = false;
+		}
+		break;
+	case 2:
+		if (Player::m_bytes & (1 << 1))
+		{
+			m_cheat2 = true;
+		}
+		else
+		{
+			m_cheat2 = false;
+		}
+		break;
+	case 3:
+		if (Player::m_bytes & (1 << 2))
+		{
+			m_cheat3 = true;
+		}
+		else 
+		{
+			m_cheat3 = false;
+		}
+		break;
+	default:
+		break;
+	}
 }

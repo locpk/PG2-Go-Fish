@@ -30,12 +30,13 @@ private:
 	const int m_maxCards;				// The number of cards the player can store (the number of elements in Hand)
 	int m_score;				// For "Go Fish," this will represent the number of pairs.  For "UNO," it will be the player's accumulated score
 	bool isPlaying;
-	
+protected:
 	bool m_cheat1;
 	bool m_cheat2;
 	bool m_cheat3;
+	unsigned char m_bytes;
 public:
-	static unsigned char m_bytes;
+	
 	// Default ctor
 	// In:	_name			The player's name
 	//		_maxCards		The maximum number of cards they can store
@@ -76,8 +77,9 @@ public:
 	inline int GetNumCards() const { return m_numCards; }
 	inline int GetMaxCards() const { return m_maxCards; }
 	inline int GetScore() const { return m_score; }
-	inline unsigned char GetCheats() const { return m_bytes; }
-
+	inline bool GetCheat1() const { return m_cheat1; }
+	inline bool GetCheat2() const { return m_cheat2; }
+	inline bool GetCheat3() const { return m_cheat3; }
 	// Do not inline this next method
 	
 	// Access a Card from the player's hand
@@ -94,7 +96,7 @@ public:
 	void SetName(const char* _name); 
 
 	inline void SetIsPlaying(bool flag) { isPlaying = flag; }
-	inline void SetCheats(unsigned int in)  { m_bytes ^= 1 << (in - 1); }
+	void SetCheats(unsigned int in);
 	// Update the player's score by some amount
 	void AddToScore(int _add);
 

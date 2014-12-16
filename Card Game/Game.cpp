@@ -1,13 +1,15 @@
 ﻿#include "Game.h"
 //define menu layout positions
 #define CURSORLEFT Console::WindowWidth() /2 -5
-#define STARTBUTTON 16
-#define CHEATBUTTON 17
-#define QUITBUTTON 18
+#define STARTBUTTON 25
+#define INTROBUTTON 26
+#define QUITBUTTON 27
+//set QUICK_TEST to TRUE and  hold return key to quick run through a AI vs AI game
 #define QUICK_TEST TRUE
 // Default ctor
-Game::Game() : m_filename("asc.txt")
+Game::Game() : m_filename("asc2.txt")
 {
+	
 	m_state = GAME_MENU;
 	for (size_t i = 0; i < 4; i++)
 	{
@@ -16,7 +18,6 @@ Game::Game() : m_filename("asc.txt")
 	m_currPlayer = 0;
 	m_numPlayers = 0;
 	isComputer = 0;
-	m_title_art = ifstream(m_filename);
 	Console::Lock(true);
 	engine = createIrrKlangDevice();
 	Console::Clear();
@@ -38,12 +39,15 @@ void Game::Run()
 {
 	// Bool to control whether the game should continue to run.
 	bool bRun = true;
+	//play BGM and it will loop
+	engine->play2D("TheForestAwakes.ogg", true);
+	
 
 	// Loop while our bool remains true.
 	while (bRun)
 	{
 		//test different state 
-
+		
 
 		switch (m_state)
 		{
@@ -55,14 +59,14 @@ void Game::Run()
 				for (;;)
 				{
 					Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 4);
-					cout << "How many players? (2 - 4)";
-					if (cin >> m_numPlayers)
+					std::cout << "How many players? (2 - 4)";
+					if (std::cin >> m_numPlayers)
 					{
-						cin.sync();
+						std::cin.sync();
 						break;
 					}
-					cin.clear();
-					cin.sync();
+					std::cin.clear();
+					std::cin.sync();
 				}
 
 			}
@@ -72,17 +76,17 @@ void Game::Run()
 				for (;;)
 				{
 					Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 4);
-					Console::ForegroundColor(rand() % (15 - 7 - 1) + 7);
-					cout << "Player " << i + 1 << " is computer? (0 for NO, 1 for YES)";
-					if (cin >> isComputer && (isComputer == 0 || isComputer == 1))
+					Console::ForegroundColor(rand() % (15 - 9) + 9);
+					std::cout << "Player " << i + 1 << " is computer? (0 for NO, 1 for YES)";
+					if (std::cin >> isComputer && (isComputer == 0 || isComputer == 1))
 					{
-						cin.sync();
+						std::cin.sync();
 						Console::Clear();
 						Console::ResetColor();
 						break;
 					}
-					cin.clear();
-					cin.sync();
+					std::cin.clear();
+					std::cin.sync();
 				}
 				if (1 == isComputer)
 				{
@@ -93,8 +97,8 @@ void Game::Run()
 					char PlayerName[21];
 					PlayerName[20] = '\0';
 					Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 4);
-					cout << " What's your name?";
-					cin.get(PlayerName, 20, '\n');
+					std::cout << " What's your name?";
+					std::cin.get(PlayerName, 20, '\n');
 					m_players[i] = new Human(PlayerName);
 				}
 
@@ -111,62 +115,63 @@ void Game::Run()
 				}
 
 			}
-			Console::FlushKeys();
+			
 			Console::Clear();
 			Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 2);
 			m_line = ">_<...I'm Loading...I wish I am a Quantum computer.";
 			for (char& c : m_line) {
-				cout << c;
-				Sleep(60);
+				std::cout << c;
+				Sleep(30);
 			}
+			Sleep(1000);
 			Console::ResetColor();
 			Console::Clear();
-			Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 2);
-			Console::ForegroundColor(Cyan);
-			cout << "Wanna cheat? (Lctrl + Return)";
+			Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 2 +1);
+			Console::ForegroundColor(DarkCyan);
+			std::cout << "Wanna cheat? (Lctrl + Return) (Return to skip.)";
 			Console::ResetColor();
 			for (;;)
 			{
-				
-				if (GetKeyState(VK_LCONTROL) && GetKeyState(VK_RETURN))
+				Console::FlushKeys();
+				if ((GetAsyncKeyState(VK_LCONTROL) & 0x8000f) && (GetAsyncKeyState(VK_RETURN) & 0x8000f))
 				{
 					Console::FlushKeys();
 					CheatMenu();
 					break;
 				}
-				else if (GetKeyState(VK_RETURN))
+				else if ((GetAsyncKeyState(VK_RETURN) & 0x8000f))
 				{
+					Console::FlushKeys();
 					break;
 				}
 			}
-			Sleep(1000);
+			Sleep(250);
+			engine->setAllSoundsPaused(true);
 			SetState(GAME_PLAY);
 			break;
 		case GAME_MENU:
 			// Insert menu code here.
-			
 			Console::FlushKeys();
-			//play BGM and it will loop
-			engine->play2D("TheForestAwakes.ogg", true);
-
+			engine->setAllSoundsPaused(false);
 			Console::Clear();
 			//show title art
-			if (m_title_art)
+			m_title_art = ifstream(m_filename);
+			if (m_title_art.is_open())
 			{
 				while (m_title_art.good())
 				{
 					std::string TempLine;
 					std::getline(m_title_art, TempLine);
 					TempLine += "\n";
-					Console::ForegroundColor(rand() % 15 + 1);
-					cout << TempLine;
+					Console::ForegroundColor(rand() % (15-9) + 9);
+					std::cout << TempLine;
 				}
 			}
 			else
 			{
 				Console::Clear();
 				Console::SetCursorPosition(Console::WindowWidth() / 3, Console::WindowHeight() / 2);
-				cout << "Title Art File does not exist.";
+				std::cout << "Title Art File does not exist.";
 			}
 
 			Console::ResetColor();
@@ -181,14 +186,14 @@ void Game::Run()
 
 			
 			Console::SetCursorPosition(CURSORLEFT, STARTBUTTON);
-			cout << ">>      " << "Start\n";
-			Console::SetCursorPosition(CURSORLEFT, CHEATBUTTON);
-			cout << ">>      " << "Cheats ;)\n";
+			std::cout << ">>      " << "Start\n";
+			Console::SetCursorPosition(CURSORLEFT, INTROBUTTON);
+			std::cout << ">>      " << "Intro\n";
 			Console::SetCursorPosition(CURSORLEFT, QUITBUTTON);
-			cout << ">>      " << "Quit\n";
+			std::cout << ">>      " << "Quit\n";
 			Console::SetCursorPosition(CURSORLEFT, STARTBUTTON);
 			MenuCursor();
-			engine->drop(); // stop the music
+			
 			Console::FlushKeys();
 			break;
 		case GAME_PLAY:
@@ -197,6 +202,11 @@ void Game::Run()
 			{
 				if (m_currPlayer == m_numPlayers) //reset players let them take turns
 					m_currPlayer = 0;
+
+				if (0 == m_players[m_currPlayer]->GetNumCards() && m_Deck.IsEmpty())
+				{
+					m_players[m_currPlayer]->SetIsPlaying(false);
+				}
 				// dummy game over condition without allowing quiting game
 				if (m_Deck.IsEmpty())
 				{
@@ -207,20 +217,20 @@ void Game::Run()
 							keep = true;
 					}
 
-					if (keep == false)
+					if (!keep)
 					{
 						SetState(GAME_END);
 						break;
 					}
 				}
+				
 				if (m_players[m_currPlayer]->IsPlaying())
 				{
 					m_players[m_currPlayer]->SortCardsbySuit();
-					//uncomment next and hold return key to quick run through a AI vs AI game
+					
 
 #if QUICK_TEST
-					cout << "Press return to run." << endl;
-					cin.get();
+					system("pause");
 #else
 					Sleep(1500);
 #endif
@@ -237,36 +247,35 @@ void Game::Run()
 					// test if a player is run out of cards
 					if (0 == m_players[m_currPlayer]->GetNumCards())
 					{
+						
 						for (size_t i = 0; i < 7; i++)
 						{
 							if (m_Deck.Draw(m_temp_card1))
 								m_players[m_currPlayer]->AddCard(m_temp_card1);
 							else
-							{
-								m_players[m_currPlayer]->SetIsPlaying(false);
 								break;
-							}
-						}
+						}	
 					}
 
-					while (AskCard(m_players[m_currPlayer], m_players)) // if ask card fails draw from deck
+					if (!m_players[m_currPlayer]->GetCheat2())
 					{
-						cout << endl << "Ask successful! Keep asking." << endl;
+						while (AskCard(m_players[m_currPlayer], m_players)) // if ask card fails draw from deck
+						{
+							std::cout << endl << "Ask successful! Keep asking." << endl;
+						}
 					}
 					if (m_Deck.Draw(m_temp_card1))
 					{
 						m_players[m_currPlayer]->AddCard(m_temp_card1);
-						cout << endl << m_players[m_currPlayer]->GetName() << " draws from the deck. a " << m_temp_card1 << endl;
+						std::cout << endl << m_players[m_currPlayer]->GetName() << " draws from the deck. a " << m_temp_card1 << endl;
 					}
 					Score(m_players[m_currPlayer]); // check pairs 
 				}
 			}
-			SetState(GAME_END);
 			//Match result
-
 			Console::Clear();
 			Console::SetCursorPosition(Console::WindowWidth() / 3, Console::WindowHeight() / 3);
-			cout << "Game ENDs!" << endl;
+			std::cout << "Game ENDs!" << endl;
 			Sleep(1500);
 			for (int i = 0; i < m_numPlayers; i++)
 			{
@@ -282,7 +291,7 @@ void Game::Run()
 				std::string str3 = std::to_string(m_players[i]->GetScore());
 				std::string str = str1 + str2 + str3;
 				for (char& c : str) {
-					cout << c;
+					std::cout << c;
 					Sleep(60);
 				}
 
@@ -292,7 +301,7 @@ void Game::Run()
 			}
 			Console::ForegroundColor(Red);
 			Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 3);
-			cout << "The Winner is : " << m_players[m_Winner]->GetName() << " , scored " << m_players[m_Winner]->GetScore() << endl;
+			std::cout << "The Winner is : " << m_players[m_Winner]->GetName() << " , scored " << m_players[m_Winner]->GetScore() << endl;
 
 			//read old leaderboard
 			strcpy_s(Winner.m_name, strlen(m_players[m_Winner]->GetName()) + 1, m_players[m_Winner]->GetName());
@@ -303,19 +312,20 @@ void Game::Run()
 			std::sort(m_TempLB.begin(), m_TempLB.end(), Winner);
 			//write a new leaderboard
 			Write(m_TempLB);
-			Sleep(6000);
+			Sleep(5000);
+			SetState(Replay());
 			break;
 		case GAME_END:
 			// The game is over, change the bool to stop the loop.
-
+			engine->drop(); // stop the music
 			bRun = false;
 			Console::ResetColor();
 			Console::Clear();
 			Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 3);
-			Console::ForegroundColor(rand() % 15 + 1);
+			Console::ForegroundColor(rand() % (15 - 9) + 9);
 			std::string str = "Bye Bye!";
 			for (char& c : str) {
-				cout << c;
+				std::cout << c;
 				Sleep(150);
 			}
 			break;
@@ -362,50 +372,53 @@ bool Game::AskCard(Player* _current_player, Player** _next_player)
 		//Human player behavior
 		//check if the card the player asking for is in its hand or not
 		bool inHand = false;
-		cout << _current_player->GetName() << " What do you want? _\b";
+		std::cout << _current_player->GetName() << " What do you want? _\b";
 		for (; ;)
 		{
-			cin >> iFace;
+			std::cin >> iFace;
 			for (int i = 0; i < _current_player->GetNumCards(); i++)
 			{
 				_current_player->GetCard(i, m_temp_card2);
 				if (iFace == m_temp_card2.GetFace())
 				{
 					inHand = true;
-					cin.clear();
-					cin.sync();
+					std::cin.clear();
+					std::cin.sync();
 				}
 			}
-			if (inHand)
+			if (inHand || _current_player->GetCheat3())
 			{
-				cin.clear();
-				cin.sync();
+				std::cin.clear();
+				std::cin.sync();
 				break;
 			}
 			else
 			{
-				cout <<"Sorry! "<< _current_player->GetName() << " You don't have that card in hand! _\b";
+				std::cout <<"Sorry! "<< _current_player->GetName() << " You don't have that card in hand! _\b";
 			}
 		}
 		
 		// validation for choice of player index
-		do
-		{
-			cin.clear();
-			cin.sync();
-			for (int i = 0; i < m_numPlayers; i++)
+		
+		
+			do
 			{
-				cout << endl;
-				if (m_players[i] != _current_player)
-					cout << i << ") " << m_players[i]->GetName() << endl;
-			}
-			cout << "Choose a player to ask for  _\b";
-		} while (!(cin >> p) || (p < 0 || p >= m_numPlayers || _next_player[p] == _current_player));
+				std::cin.clear();
+				std::cin.sync();
+				for (int i = 0; i < m_numPlayers; i++)
+				{
+					std::cout << endl;
+					if (m_players[i] != _current_player)
+						std::cout << i << ") " << m_players[i]->GetName() << endl;
+				}
+				std::cout << "Choose a player to ask for  _\b";
+			} while (!(std::cin >> p) || (p < 0 || p >= m_numPlayers || _next_player[p] == _current_player));
+		
 
 		//jump out when player's is being asked hand is empty
 		if (0 == _next_player[p]->GetNumCards())
 			return false;
-		cout << _current_player->GetName() << " is asking " << _next_player[p]->GetName() << " for: " << iFace << endl;
+		std::cout << _current_player->GetName() << " is asking " << _next_player[p]->GetName() << " for: " << iFace << endl;
 		for (int i = 0; i < _next_player[p]->GetNumCards(); i++)
 		{
 			_next_player[p]->GetCard(i, m_temp_card2);
@@ -416,6 +429,7 @@ bool Game::AskCard(Player* _current_player, Player** _next_player)
 				return true;
 			}
 		}
+		std::cout <<_next_player[p]->GetName() << " : Go Fish!" << endl;
 		return false;
 	}
 	else
@@ -434,23 +448,23 @@ bool Game::AskCard(Player* _current_player, Player** _next_player)
 		_current_player->GetCard(iCount, m_temp_card1);
 		iFace = m_temp_card1.GetFace();
 
-		cout << _current_player->GetName() << " is asking " << _next_player[p]->GetName() << " for: ";
+		std::cout << _current_player->GetName() << " is asking " << _next_player[p]->GetName() << " for: ";
 		switch (iFace)
 		{
 		case 11:
-			cout << 'J' << ' ' << endl;
+			std::cout << 'J' << ' ' << endl;
 			break;
 		case 12:
-			cout << 'Q' << ' ' << endl;
+			std::cout << 'Q' << ' ' << endl;
 			break;
 		case 13:
-			cout << 'K' << ' ' << endl;
+			std::cout << 'K' << ' ' << endl;
 			break;
 		case 14:
-			cout << 'A' << ' ' << endl;
+			std::cout << 'A' << ' ' << endl;
 			break;
 		default:
-			cout << iFace << ' ' << endl;
+			std::cout << iFace << ' ' << endl;
 			break;
 		}
 
@@ -464,24 +478,26 @@ bool Game::AskCard(Player* _current_player, Player** _next_player)
 				return true;
 			}
 		}
+		std::cout << _next_player[p]->GetName() << " : Go Fish!" << endl;
 		return false;
 	}
 }
 
 void Game::MenuCursor()
 {
+	bool held = false;
 	//get keyboard input 
 	while (true)
 	{
 		//a pause in case loops too quick before user release the key
 		Sleep(500);
-		if (GetAsyncKeyState(VK_UP))
+		if ((GetAsyncKeyState(VK_UP) & 0x8000f))
 		{
 			if (Console::CursorTop() == QUITBUTTON)
 			{
-				Console::SetCursorPosition(CURSORLEFT, CHEATBUTTON);
+				Console::SetCursorPosition(CURSORLEFT, INTROBUTTON);
 			}
-			else if (Console::CursorTop() == CHEATBUTTON)
+			else if (Console::CursorTop() == INTROBUTTON)
 			{
 				Console::SetCursorPosition(CURSORLEFT, STARTBUTTON);
 			}
@@ -490,13 +506,13 @@ void Game::MenuCursor()
 				Console::SetCursorPosition(CURSORLEFT, QUITBUTTON);
 			}
 		}
-		else if (GetAsyncKeyState(VK_DOWN))
+		else if ((GetAsyncKeyState(VK_DOWN) & 0x8000f))
 		{
 			if (Console::CursorTop() == STARTBUTTON)
 			{
-				Console::SetCursorPosition(CURSORLEFT, CHEATBUTTON);
+				Console::SetCursorPosition(CURSORLEFT, INTROBUTTON);
 			}
-			else if (Console::CursorTop() == CHEATBUTTON)
+			else if (Console::CursorTop() == INTROBUTTON)
 			{
 				Console::SetCursorPosition(CURSORLEFT, QUITBUTTON);
 			}
@@ -505,16 +521,18 @@ void Game::MenuCursor()
 				Console::SetCursorPosition(CURSORLEFT, STARTBUTTON);
 			}
 		}
-		else if (GetAsyncKeyState(VK_RETURN))
+		else if ((GetAsyncKeyState(VK_RETURN) & 0x8000f))
 		{
 			if (QUITBUTTON == Console::CursorTop())
 			{
 				SetState(GAME_END);
 				break;
 			}
-			else if (CHEATBUTTON == Console::CursorTop())
+			else if (INTROBUTTON == Console::CursorTop())
 			{
-
+				Intro();
+				SetState(GAME_MENU);
+				break;
 			}
 			else
 			{
@@ -528,8 +546,124 @@ void Game::MenuCursor()
 
 void Game::CheatMenu()
 {
-	
-	cout << "You are in cheat menu";
+	Console::Clear();
+	Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 3);
+	std::cout << "You are in cheat menu";
+	Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 3 + 1);
+	std::cout << "Which Player are you?";
+	for (int i = 0; i < m_numPlayers; i++)
+	{
+		Console::SetCursorPosition(Console::WindowWidth() / 4, Console::CursorTop() + 1);
+		std::cout << i + 1 << "). " << m_players[i]->GetName() << endl;
+	}
+	int iChoice = 5;
+	for (;;)
+	{
+		if (std::cin >> iChoice || iChoice <= 4 || iChoice > 0)
+		{
+			std::cin.clear();
+			std::cin.sync();
+			break;
+		}
+		std::cin.clear();
+		std::cin.sync();
+	}
+	Console::Clear();
+	for (;;)
+	{
+		Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 3);
+		std::cout << "1) See other's cards.\tLctrl + Numpad 1 (Press again to turn off)";
+		Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 3 + 1);
+		std::cout << "2) Force other's to draw.\tLctrl + Numpad 2 (Press again to turn off)";
+		Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 3 + 2);
+		std::cout << "3) Draw cards not in your hands.\tLctrl + Numpad 3 (Press again to turn off)";
+		Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 3 + 3);
+		std::cout << "Lctrl + Return to exit cheats menu.";
+		Console::FlushKeys();
+		Console::Lock(true);
+		if ((GetAsyncKeyState(VK_LCONTROL) & 0x8000f) && (GetAsyncKeyState(VK_NUMPAD1) & 0x8000f))
+		{
+			for (int i = 0; i < m_numPlayers; i++)
+			{
+				if (i != (iChoice - 1))
+					m_players[i]->SetCheats(1);
+			}
+			Console::Clear();
+			Console::Lock(false);
+			
+			for (int i = 0; i < m_numPlayers; i++)
+			{
+				if (i != (iChoice - 1))
+				{
+					if (m_players[i]->GetCheat1())
+					{
+						Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 3);
+						std::cout << "See other's cards. ON";
+					}
+					else
+					{
+						Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 3);
+						std::cout << "See other's cards. OFF";
+					}
+				}
+			}
+			Sleep(1000);
+		}
+		if ((GetAsyncKeyState(VK_LCONTROL) & 0x8000f) && (GetAsyncKeyState(VK_NUMPAD2) & 0x8000f))
+		{
+			for (int i = 0; i < m_numPlayers; i++)
+			{
+				if (i != iChoice - 1)
+					m_players[i]->SetCheats(2);
+			}
+			Console::Clear();
+			Console::Lock(false);
+			Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 3);
+			for (int i = 0; i < m_numPlayers; i++)
+			{
+				if (i != (iChoice - 1))
+				{
+					if (m_players[i]->GetCheat2())
+					{
+						Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 3);
+						std::cout << "Force other's to draw. ON";
+					}
+					else
+					{
+						Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 3);
+						std::cout << "Force other's to draw. OFF";
+					}
+				}
+			}
+			
+			Sleep(1000);
+		}
+		if ((GetAsyncKeyState(VK_LCONTROL) & 0x8000f) && (GetAsyncKeyState(VK_NUMPAD3) & 0x8000f))
+		{
+			m_players[iChoice - 1]->SetCheats(3);
+			Console::Clear();
+			Console::Lock(false);
+			Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 3);
+			if (m_players[iChoice - 1]->GetCheat3())
+			{
+				Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 3);
+				std::cout << "Draw cards not in your hands. ON";
+			}
+			else
+			{
+				Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 3);
+				std::cout << "Draw cards not in your hands. OFF";
+			}
+			Sleep(1000);
+		}
+		if ((GetAsyncKeyState(VK_LCONTROL) & 0x8000f) && (GetAsyncKeyState(VK_RETURN) & 0x8000f))
+		{
+			Console::Lock(false);
+			Sleep(1000);
+			break;
+		}
+	}
+
 }
 
 void Game::Read(std::vector<Leaderboard>& _in)
@@ -576,4 +710,73 @@ void Game::Write(std::vector<Leaderboard>& _in)
 	{
 		std::clog << "Couldn't open 'High Score.txt' for writing!\n";
 	}
+}
+
+GAMESTATE Game::Replay()
+{
+	int iChoice = 5;
+	Console::Clear();
+	Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 2);
+	std::cout << "Do you wanna play again? 1) Yes 2)No";
+	for (;;)
+	{
+		if (std::cin >> iChoice || 1 == iChoice || 2 == iChoice)
+		{
+			std::cin.clear();
+			std::cin.sync();
+			break;
+		}
+		std::cin.clear();
+		std::cin.sync();
+	}
+	if (1 == iChoice)
+	{
+		m_Deck.Initialize();
+		//initialize player's hands
+		for (int i = 0; i < m_numPlayers; i++)
+		{
+			//draw 7 card for the player 
+			m_players[i]->Clear();
+			for (int j = 0; j < 7; j++)
+			{
+				m_Deck.Draw(m_temp_card1);
+				m_players[i]->AddCard(m_temp_card1);
+			}
+		}
+		return GAME_PLAY;
+	}
+	else
+	{
+		m_Deck.Initialize();
+		for (int i = 0; i < m_numPlayers; i++)
+		{
+			delete m_players[i];
+			m_players[i] = nullptr;
+		}
+		return GAME_MENU;
+	}
+}
+
+void Game::Intro()
+{
+	
+	Console::Clear();
+	ifstream Intro = ifstream("Intro.txt");
+	if (Intro)
+	{
+		while (Intro.good())
+		{
+			std::string TempLine;
+			std::getline(Intro, TempLine);
+			TempLine += "\n";
+			std::cout << TempLine;
+		}
+	}
+	else
+	{
+		Console::Clear();
+		Console::SetCursorPosition(Console::WindowWidth() / 3, Console::WindowHeight() / 2);
+		std::cout << "Intro File does not exist.";
+	}
+	system("pause");
 }

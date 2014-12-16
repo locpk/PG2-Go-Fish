@@ -37,7 +37,7 @@ void Human::Show(bool is_current) const
 			Console::ForegroundColor(Red);
 		else
 			Console::ForegroundColor(Black);
-		if (is_current)
+		if (is_current || m_cheat1)
 		{
 			switch (tempCard.GetFace())
 			{
@@ -72,7 +72,7 @@ void Human::Show(bool is_current) const
 		wcout << DoubleLine[3];
 		Console::SetCursorPosition(Console::CursorLeft() - 5, Console::CursorTop() + 1);
 		wcout << DoubleLine[4] << DoubleLine[1] << DoubleLine[1] << DoubleLine[1];
-		if (is_current)
+		if (is_current || m_cheat1)
 		{
 			switch (tempCard.GetFace())
 			{

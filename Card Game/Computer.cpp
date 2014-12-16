@@ -39,28 +39,34 @@ void Computer::Show(bool is_current) const
 		else
 			Console::ForegroundColor(Black);
 		//uncomment following lines to display computer's cards
-		/*switch (tempCard.GetFace())
+		if (m_cheat1)
 		{
-		case 10:
-			cout << setw(2)<< tempCard.GetFace();
-			break;
-		case 11:
-			cout << 'J';
-			break;
-		case 12:
-			cout << 'Q';
-			break;
-		case 13:
-			cout << 'K';
-			break;
-		case 14:
-			cout << 'A';
-			break;
-		default:
-			cout << tempCard.GetFace();
-			break;
-		}*/
-		cout << '?';
+			switch (tempCard.GetFace())
+			{
+			case 10:
+				cout << setw(2) << tempCard.GetFace();
+				break;
+			case 11:
+				cout << 'J';
+				break;
+			case 12:
+				cout << 'Q';
+				break;
+			case 13:
+				cout << 'K';
+				break;
+			case 14:
+				cout << 'A';
+				break;
+			default:
+				cout << tempCard.GetFace();
+				break;
+			}
+		}
+		else
+		{
+			cout << '?';
+		}
 		wcout  << DoubleLine[1] << DoubleLine[1] << DoubleLine[1] << DoubleLine[2];
 		Console::SetCursorPosition(Console::CursorLeft() - 5, Console::CursorTop() + 1);
 		wcout << DoubleLine[3];
@@ -70,25 +76,31 @@ void Computer::Show(bool is_current) const
 		Console::SetCursorPosition(Console::CursorLeft() - 5, Console::CursorTop() + 1);
 		wcout << DoubleLine[4] << DoubleLine[1] << DoubleLine[1] << DoubleLine[1];
 		//uncomment following lines to display computer's cards
-		/*switch (tempCard.GetFace())
+		if (m_cheat1)
 		{
-		case 11:
-			cout << 'J';
-			break;
-		case 12:
-			cout << 'Q';
-			break;
-		case 13:
-			cout << 'K';
-			break;
-		case 14:
-			cout << 'A';
-			break;
-		default:
-			cout << tempCard.GetFace();
-			break;
-		}*/
-		cout << '?';
+			switch (tempCard.GetFace())
+			{
+			case 11:
+				cout << 'J';
+				break;
+			case 12:
+				cout << 'Q';
+				break;
+			case 13:
+				cout << 'K';
+				break;
+			case 14:
+				cout << 'A';
+				break;
+			default:
+				cout << tempCard.GetFace();
+				break;
+			}
+		}
+		else
+		{
+			cout << '?';
+		}
 		Console::ResetColor();
 		cout << " ";
 		Console::SetCursorPosition(Console::CursorLeft(), currentheight);

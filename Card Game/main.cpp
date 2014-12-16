@@ -52,8 +52,9 @@ int main(int, const char*[])
 	
 
 #if GAME
+	Console::SetBufferSize(100, 50);
 	Console::SetWindowSize(100, 50);
-	Console::SetBufferSize(Console::WindowWidth(),Console::WindowHeight());
+	
 	
 	Game game;
 	game.Run();
