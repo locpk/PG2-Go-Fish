@@ -18,6 +18,7 @@ Game::Game() : m_filename("asc2.txt")
 	m_currPlayer = 0;
 	m_numPlayers = 0;
 	isComputer = 0;
+	m_MaxScore = 0;
 	Console::Lock(true);
 	engine = createIrrKlangDevice();
 	Console::Clear();
@@ -198,6 +199,7 @@ void Game::Run()
 			break;
 		case GAME_PLAY:
 			// Insert game play code here.
+			Console::CursorVisible(false);
 			for (int m_currPlayer = 0; m_currPlayer <= m_numPlayers; m_currPlayer++)
 			{
 				if (m_currPlayer == m_numPlayers) //reset players let them take turns
@@ -279,7 +281,7 @@ void Game::Run()
 			Sleep(1500);
 			for (int i = 0; i < m_numPlayers; i++)
 			{
-				if (m_players[i]->GetScore() > m_MaxScore)
+				if (m_players[i]->GetScore() >= m_MaxScore)
 				{
 					m_MaxScore = m_players[i]->GetScore();
 					m_Winner = i;
@@ -312,8 +314,9 @@ void Game::Run()
 			std::sort(m_TempLB.begin(), m_TempLB.end(), Winner);
 			//write a new leaderboard
 			Write(m_TempLB);
-			Sleep(5000);
+			Sleep(4000);
 			SetState(Replay());
+			Console::CursorVisible(true);
 			break;
 		case GAME_END:
 			// The game is over, change the bool to stop the loop.
@@ -407,7 +410,7 @@ bool Game::AskCard(Player* _current_player, Player** _next_player)
 				std::cin.sync();
 				for (int i = 0; i < m_numPlayers; i++)
 				{
-					std::cout << endl;
+					
 					if (m_players[i] != _current_player)
 						std::cout << i << ") " << m_players[i]->GetName() << endl;
 				}
@@ -490,7 +493,7 @@ void Game::MenuCursor()
 	while (true)
 	{
 		//a pause in case loops too quick before user release the key
-		Sleep(500);
+		Sleep(250);
 		if ((GetAsyncKeyState(VK_UP) & 0x8000f))
 		{
 			if (Console::CursorTop() == QUITBUTTON)
@@ -737,6 +740,7 @@ GAMESTATE Game::Replay()
 		{
 			//draw 7 card for the player 
 			m_players[i]->Clear();
+			m_players[i]->SetIsPlaying(true);
 			for (int j = 0; j < 7; j++)
 			{
 				m_Deck.Draw(m_temp_card1);

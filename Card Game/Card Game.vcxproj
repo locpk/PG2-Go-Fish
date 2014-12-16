@@ -14,6 +14,7 @@
     <ProjectGuid>{D50AB877-404B-4B78-A0CB-8C269EAA4376}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>CardGame</RootNamespace>
+    <ProjectName>Go Fish(By Junshu Chen)</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
