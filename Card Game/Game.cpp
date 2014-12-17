@@ -4,6 +4,8 @@
 #define STARTBUTTON 25
 #define INTROBUTTON 26
 #define QUITBUTTON 27
+//turn on music here
+#define MUSIC TRUE
 //set QUICK_TEST to TRUE and  hold return key to quick run through a AI vs AI game
 #define QUICK_TEST FALSE
 // Default ctor
@@ -20,7 +22,9 @@ Game::Game() : m_filename("asc2.txt")
 	isComputer = 0;
 	m_MaxScore = 0;
 	Console::Lock(true);
+#if MUSIC
 	engine = createIrrKlangDevice();
+#endif
 	Console::Clear();
 	Console::Lock(false);
 
@@ -40,9 +44,10 @@ void Game::Run()
 {
 	// Bool to control whether the game should continue to run.
 	bool bRun = true;
+#if MUSIC
 	//play BGM and it will loop
 	engine->play2D("TheForestAwakes.ogg", true);
-	
+#endif
 
 	// Loop while our bool remains true.
 	while (bRun)
@@ -77,7 +82,7 @@ void Game::Run()
 				for (;;)
 				{
 					Console::SetCursorPosition(Console::WindowWidth() / 4, Console::WindowHeight() / 4);
-					Console::ForegroundColor(rand() % (15 - 9) + 9);
+					Console::ForegroundColor(rand() % (15 - 9) + 10);
 					std::cout << "Player " << i + 1 << " is computer? (0 for NO, 1 for YES)";
 					if (std::cin >> isComputer && (isComputer == 0 || isComputer == 1))
 					{
@@ -147,13 +152,14 @@ void Game::Run()
 				}
 			}*/
 			Sleep(250);
-			engine->setAllSoundsPaused(true);
 			SetState(GAME_MENU);
 			break;
 		case GAME_MENU:
 			// Insert menu code here.
 			Console::FlushKeys();
+#if MUSIC
 			engine->setAllSoundsPaused(false);
+#endif
 			Console::Clear();
 			//show title art
 			m_title_art = ifstream(m_filename);
@@ -195,10 +201,11 @@ void Game::Run()
 			Console::SetCursorPosition(CURSORLEFT, QUITBUTTON + 1);
 			std::cout << "Try Lctrl + Return";
 			Console::SetCursorPosition(CURSORLEFT, STARTBUTTON);
-			
 			MenuCursor();
-			
 			Console::FlushKeys();
+#if MUSIC
+			engine->setAllSoundsPaused(true);
+#endif
 			break;
 		case GAME_PLAY:
 			// Insert game play code here.
@@ -323,7 +330,9 @@ void Game::Run()
 			break;
 		case GAME_END:
 			// The game is over, change the bool to stop the loop.
+#if MUSIC
 			engine->drop(); // stop the music
+#endif
 			bRun = false;
 			Console::ResetColor();
 			Console::Clear();
@@ -369,7 +378,7 @@ int Game::Score(Player* _player)
 	//show each player's hand
 	for (int i = 0; i < m_numPlayers; i++)
 	{
-		if (i == m_currPlayer)
+		if (m_players[i] == _player)
 			m_players[i]->Show(true);
 		else
 			m_players[i]->Show(false);
@@ -442,7 +451,7 @@ bool Game::AskCard(Player* _current_player, Player** _next_player)
 			//jump out when player's is being asked hand is empty
 			if (0 == _next_player[p]->GetNumCards())
 				return false;
-			Console::SetCursorPosition(Console::CursorLeft(), 23);
+			
 			std::cout << "\r" << _current_player->GetName() << " is asking " << _next_player[p]->GetName() << " for: ";
 			switch (iFace)
 			{
@@ -510,7 +519,6 @@ bool Game::AskCard(Player* _current_player, Player** _next_player)
 			iCount = rand() % _current_player->GetNumCards();
 			_current_player->GetCard(iCount, m_temp_card1);
 			iFace = m_temp_card1.GetFace();
-			Console::SetCursorPosition(Console::CursorLeft(), 23);
 			std::cout << _current_player->GetName() << " is asking " << _next_player[p]->GetName() << " for: ";
 			switch (iFace)
 			{
