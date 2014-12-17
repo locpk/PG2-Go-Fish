@@ -1,6 +1,6 @@
 ﻿#include "Player.h"
 
-
+unsigned char Player::m_bytes;
 bool SortBySuit(Card const & L, Card const &  R) { return L.GetSuit() < R.GetSuit(); }
 bool SortByFace(Card const & L, Card const &  R) { return L < R; }
 /* TODO Lab5:
@@ -278,43 +278,20 @@ bool Player::SortCardsbyNum()
 	return true;
 }
 
-void Player::SetCheats(unsigned int in)  
+void Player::SetCheats(unsigned int _in)  
 { 
-	m_bytes ^= 1 << (in - 1); 
-	//close cheat1
-	switch (in)
-	{
-	case 1:
-		if (Player::m_bytes & 1)
-		{
-			m_cheat1 = true;
-		}
-		else
-		{
-			m_cheat1 = false;
-		}
-		break;
-	case 2:
-		if (Player::m_bytes & (1 << 1))
-		{
-			m_cheat2 = true;
-		}
-		else
-		{
-			m_cheat2 = false;
-		}
-		break;
-	case 3:
-		if (Player::m_bytes & (1 << 2))
-		{
-			m_cheat3 = true;
-		}
-		else 
-		{
-			m_cheat3 = false;
-		}
-		break;
-	default:
-		break;
-	}
+	m_bytes ^= 1 << (_in - 1); 
+}
+
+void Player::SetCheat1(bool _in)
+{
+	m_cheat1 = _in;
+}
+void Player::SetCheat2(bool _in)
+{
+	m_cheat2 = _in;
+}
+void Player::SetCheat3(bool _in)
+{
+	m_cheat3 = _in;
 }

@@ -34,9 +34,9 @@ protected:
 	bool m_cheat1;
 	bool m_cheat2;
 	bool m_cheat3;
-	unsigned char m_bytes;
-public:
 	
+public:
+	static unsigned char m_bytes;
 	// Default ctor
 	// In:	_name			The player's name
 	//		_maxCards		The maximum number of cards they can store
@@ -97,6 +97,9 @@ public:
 
 	inline void SetIsPlaying(bool flag) { isPlaying = flag; }
 	void SetCheats(unsigned int in);
+	void Player::SetCheat1(bool _in);
+	void Player::SetCheat2(bool _in);
+	void Player::SetCheat3(bool _in);
 	// Update the player's score by some amount
 	void AddToScore(int _add);
 
