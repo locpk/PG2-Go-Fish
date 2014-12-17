@@ -22,7 +22,7 @@ Ebenide	9
 Goc	9
 Ycoryf	9
 Epaqoy	9
-Jesoqa	8
+Ebadoyu	9
 Ugywazo	8
 Inyl	8
 Filowo	8
@@ -51,8 +51,8 @@ Inyl	8
 Cihuvul	8
 Oboco	8
 Aquwuka	8
+Jesoqa	8
 Era	7
-Yca	7
 Ezuke	7
 Usesoy	7
 Yca	7
@@ -67,6 +67,7 @@ Ezuke	7
 Era	7
 Usesoy	7
 Oxi	7
+Yca	7
 Qazyh	6
 Ora	4
 Ora	4

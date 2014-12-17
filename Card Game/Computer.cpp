@@ -45,60 +45,77 @@ void Computer::Show(bool is_current) const
 			{
 			case 10:
 				cout << setw(2) << tempCard.GetFace();
+				wcout << DoubleLine[1] << DoubleLine[1] << DoubleLine[2];
 				break;
 			case 11:
 				cout << 'J';
+				wcout << DoubleLine[1] << DoubleLine[1] << DoubleLine[1] << DoubleLine[2];
 				break;
 			case 12:
 				cout << 'Q';
+				wcout << DoubleLine[1] << DoubleLine[1] << DoubleLine[1] << DoubleLine[2];
 				break;
 			case 13:
 				cout << 'K';
+				wcout << DoubleLine[1] << DoubleLine[1] << DoubleLine[1] << DoubleLine[2];
 				break;
 			case 14:
 				cout << 'A';
+				wcout << DoubleLine[1] << DoubleLine[1] << DoubleLine[1] << DoubleLine[2];
 				break;
 			default:
 				cout << tempCard.GetFace();
+				wcout << DoubleLine[1] << DoubleLine[1] << DoubleLine[1] << DoubleLine[2];
 				break;
 			}
 		}
 		else
 		{
 			cout << '?';
+			wcout << DoubleLine[1] << DoubleLine[1] << DoubleLine[1] << DoubleLine[2];
 		}
-		wcout  << DoubleLine[1] << DoubleLine[1] << DoubleLine[1] << DoubleLine[2];
+		
 		Console::SetCursorPosition(Console::CursorLeft() - 5, Console::CursorTop() + 1);
 		wcout << DoubleLine[3];
 		
 		cout << " " << tempCard.GetSuit() << " ";
 		wcout << DoubleLine[3];
 		Console::SetCursorPosition(Console::CursorLeft() - 5, Console::CursorTop() + 1);
-		wcout << DoubleLine[4] << DoubleLine[1] << DoubleLine[1] << DoubleLine[1];
+		
 		//uncomment following lines to display computer's cards
 		if (m_cheat1)
 		{
 			switch (tempCard.GetFace())
 			{
+			case 10:
+				wcout << DoubleLine[4] << DoubleLine[1] << DoubleLine[1];
+				cout << tempCard.GetFace();
+				break;
 			case 11:
+				wcout << DoubleLine[4] << DoubleLine[1] << DoubleLine[1] << DoubleLine[1];
 				cout << 'J';
 				break;
 			case 12:
+				wcout << DoubleLine[4] << DoubleLine[1] << DoubleLine[1] << DoubleLine[1];
 				cout << 'Q';
 				break;
 			case 13:
+				wcout << DoubleLine[4] << DoubleLine[1] << DoubleLine[1] << DoubleLine[1];
 				cout << 'K';
 				break;
 			case 14:
+				wcout << DoubleLine[4] << DoubleLine[1] << DoubleLine[1] << DoubleLine[1];
 				cout << 'A';
 				break;
 			default:
+				wcout << DoubleLine[4] << DoubleLine[1] << DoubleLine[1] << DoubleLine[1];
 				cout << tempCard.GetFace();
 				break;
 			}
 		}
 		else
 		{
+			wcout << DoubleLine[4] << DoubleLine[1] << DoubleLine[1] << DoubleLine[1];
 			cout << '?';
 		}
 		Console::ResetColor();

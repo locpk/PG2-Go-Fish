@@ -231,7 +231,7 @@ void Game::Run()
 				
 				if (m_players[m_currPlayer]->IsPlaying())
 				{
-					m_players[m_currPlayer]->SortCardsbySuit();
+					
 					
 
 #if QUICK_TEST
@@ -362,6 +362,7 @@ int Game::Score(Player* _player)
 			}
 		}
 	}
+	_player->SortCardsbySuit();
 	Sleep(700);
 	Console::Lock(true);
 	Console::Clear();
