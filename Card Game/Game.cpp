@@ -173,6 +173,7 @@ void Game::Run()
 					Console::ForegroundColor(rand() % (15-9) + 9);
 					std::cout << TempLine;
 				}
+				m_title_art.close();
 			}
 			else
 			{
